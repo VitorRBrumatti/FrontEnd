@@ -1,10 +1,12 @@
 <script setup>
    import Beleza from '../assets/beleza.png'
+   import image from '../assets/image.png'
 </script>
 
 <template>
     <div class="detail" v-on:mouseover="colorChange()">
         <beleza></beleza>
+        <image></image>
     </div>
 </template>
 

@@ -1,19 +1,12 @@
 <script>
-  import Login from '../src/views/AboutView.vue'
-
-
-export default {
-  components: {
-    Login
-  },
-
-}
+  import LoginView from './views/LoginView.vue'
 
 </script>
 
 <template>
-<Login></Login>
-
+  <header>
+    <router-view />
+  </header>
 </template>
 
 <style scoped></style>
