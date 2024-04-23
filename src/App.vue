@@ -1,12 +1,19 @@
 <script>
-import HomeView from './views/HomeView.vue';
+  import Login from '../src/views/AboutView.vue'
+
+
+export default {
+  components: {
+    Login
+  },
+
+}
 
 </script>
 
 <template>
-  <HomeView />
+<Login></Login>
+
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
