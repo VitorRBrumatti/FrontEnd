@@ -6,7 +6,7 @@
 
     <div class="container">
         <div class="efect">
-            <p class="rock-and-roll">🤘</p>
+            <img src="../assets/rockLoose.svg" alt="RockLoose" class="rock-and-roll">
             <div class="detail"></div>
             <img src="../assets/camada.svg" alt="Camadas" class="camadas">
             <h1 class="title">A fortuna fica ao lado daquele que ousa.</h1>
@@ -20,6 +20,7 @@
 .container {
     position: relative;
 }
+
 
 .efect:hover {
     transition: 0.3s;
