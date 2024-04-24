@@ -1,20 +1,16 @@
-<script setup>
+<script>
 
 </script>
 
 <template>
 
     <div class="container">
-        <div class="emoji">
-            <p class="rock-and-roll">🤘</p>
-        </div>
         <div class="efect">
+            <p class="rock-and-roll">🤘</p>
             <div class="detail"></div>
             <img src="../assets/camada.svg" alt="Camadas" class="camadas">
-            <div class="texts">
-                <h1 class="title">A fortuna fica ao lado daquele que ousa.</h1>
-                <p class="sub-title">Todo progresso ocorre fora da zona de conforto.</p>
-        </div>
+            <h1 class="title">A fortuna fica ao lado daquele que ousa.</h1>
+            <p class="sub-title">Todo progresso ocorre fora da zona de conforto.</p>
         </div>
     </div>
 
@@ -24,20 +20,12 @@
 .container {
     position: relative;
 }
-.container:hover  {
+
+.efect:hover {
     transition: 0.3s;
     filter: invert(1);
 }
-.container:hover .emoji {
-   transform: translateY(50px);
-}
-.emoji {
-    transition: 0.3s;
-}
-/* .efect:hover {
-    transition: 0.3s;
-    filter: invert(1);
-} */
+
 .rock-and-roll {
     font-size: 48px;
     font-family: Montserrat;
@@ -73,8 +61,8 @@
     line-height: 24px;
     text-align: left;
     padding-left: 39px;
-    
-    
+
+
 }
 
 .camadas {
@@ -93,6 +81,4 @@
     gap: 0px;
     background: #F7F7F7;
 }
-
-
 </style>
