@@ -4,8 +4,11 @@
 
 <template>
     <div class="questionary">
-        <h1>Login</h1>
+        <h1>Inscreva-se</h1>
         <form>
+            <label class="label" for="name">Nome completo</label>
+            <input class="input" type="text" placeholder=" Ex: Jair Augusto">
+
             <label class="label" for="name">Endereço de e-mail</label>
             <input class="input" type="text" placeholder=" email@mail.com.br">
 
@@ -13,7 +16,7 @@
             <input class="input" type="password" placeholder=" *******" id="password">
         </form>
         <div class="funcoes">
-            <a href="/Register">Não tenho conta</a>
+            <a href="/">Já tenho conta</a>
             <button>Acessar</button>
         </div>
     </div>
@@ -26,10 +29,10 @@ form {
 }
 
 .questionary {
-    margin-left: 70px;
-    margin-top: 100px;
+    margin-top: 10px;
     font-family: Montserrat;
     color: black;
+    
 }
 
 .label {
@@ -61,7 +64,7 @@ form {
 }
 
 h1 {
-    width: 81px;
+    width: 182px;
     height: 49px;
     font-weight: 800;
     line-height: 48.6px;

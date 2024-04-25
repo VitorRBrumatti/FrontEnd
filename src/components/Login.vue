@@ -6,27 +6,24 @@
 
     <div class="container">
         <div class="efect">
-            <img src="../assets/rockLoose.svg" alt="RockLoose" class="rock-and-roll">
             <div class="detail"></div>
             <img src="../assets/camada.svg" alt="Camadas" class="camadas">
             <h1 class="title">A fortuna fica ao lado daquele que ousa.</h1>
             <p class="sub-title">Todo progresso ocorre fora da zona de conforto.</p>
         </div>
+        <img src="../assets/rockLoose.png" alt="RockLoose" class="rock-and-roll">  
     </div>
-
+    
 </template>
 
 <style scoped>
 .container {
     position: relative;
 }
-
-
 .efect:hover {
     transition: 0.3s;
     filter: invert(1);
 }
-
 .rock-and-roll {
     font-size: 48px;
     font-family: Montserrat;
