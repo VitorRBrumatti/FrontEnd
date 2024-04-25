@@ -7,7 +7,7 @@
         <h1>Inscreva-se</h1>
         <form>
             <label class="label" for="name">Nome completo</label>
-            <input class="input" type="text" placeholder=" Ex: Jair Augusto">
+            <input class="input" type="text" placeholder=" Ex: Vitor Rufino Brumatti">
 
             <label class="label" for="name">Endereço de e-mail</label>
             <input class="input" type="text" placeholder=" email@mail.com.br">
