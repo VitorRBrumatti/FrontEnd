@@ -1,24 +1,87 @@
+<script>
+export default {
+    data() {
+        return {
+            showing: false
+        }
+    },
+}
+</script>
+
+
 <template>
     <nav>
         <img src="../assets/rockLoose.png" alt="RockLoose" class="nav-rock">
+        <div class="nav-menu">
+            <div class="taskHover" @mouseover="showing = true" @mouseout="showing = false">
+                <img src="../assets/criarTarefa.svg" alt="New task" class="newPlus">
+                <p v-show="showing == true" class="taskHover">Criar tarefa</p>
+            </div>
+            <img src="../assets/Notification.svg" alt="Notification vetor" class="notification">
+            <img src="../assets/Profile.svg" alt="Profile Pic" class="profile-pic">
+        </div>
     </nav>
 </template>
 
 <style scoped>
 nav {
-    display: flex;
     background-color: black;
+    display: flex;
     width: 100%;
     height: 80px;
     position: fixed;
     top: 0%;
     left: 0%;
+    margin-inline: auto;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 31px;
+
 }
+
+.nav-menu {
+    display: flex;
+    gap: 63px;
+}
+
 .nav-rock {
-    position: relative;
     width: 33px;
     height: 33px;
-    top: 29%;
-    left: 2%;
+}
+
+.profile-pic {
+    width: 30px;
+    height: 30px;
+}
+
+.notification {
+    margin-top: 3px;
+    width: 25px;
+    height: 28px;
+}
+
+.newPlus {
+    width: 20px;
+    height: 20px;
+    border: 2px 0px 0px 0px;
+
+
+}
+
+.taskHover {
+    margin-top: 6px;
+    display: flex;
+    gap: 11px;
+    justify-content: center;
+    cursor: pointer;
+}
+
+p {
+    font-family: Montserrat;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 18.29px;
+    color: white;
+    text-align: center;
 }
 </style>
