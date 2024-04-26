@@ -87,9 +87,10 @@ input.date {
     background-repeat: no-repeat;
     background-size: 20px 20px;
     background-position: left center;
-    padding-left: 7%;
+    padding-left: 8%;
 }
 input.date::-webkit-calendar-picker-indicator {
     display: none;
+
 }
 </style>
