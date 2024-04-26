@@ -9,7 +9,7 @@ export default {
         <div class="superior">
             <input class="nameTask" type="text" vmodel="nameTask" placeholder="Nome da tarefa">
             <input class="description" type="text" vmodel="description" placeholder="Descrição">
-            <input class="date" vmodel="date" type="date">
+            <!-- <input class="date" vmodel="date" type="date"> -->
         </div>
         <div class="inferior">
             <button>Cancelar</button>
