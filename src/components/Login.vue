@@ -20,11 +20,17 @@
 .container {
     position: relative;
 }
-.efect:hover {
+.container:hover .efect{
     transition: 0.3s;
     filter: invert(1);
 }
+.container:hover .rock-and-roll{
+    transition: 0.5s;
+    transform: translateY(25px);
+}
+
 .rock-and-roll {
+    transition: 0.5s;
     font-size: 48px;
     font-family: Montserrat;
     position: absolute;

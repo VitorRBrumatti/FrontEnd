@@ -1,5 +1,17 @@
-<script setup>
-
+<script>
+import router from '@/router'
+    export default {
+        data() {
+            return {
+                router: this.$route,
+            }
+        },
+        methods: {
+            acessHome() {
+                this.$router.push('/Home')
+            }
+        },
+    }
 </script>
 
 <template>
@@ -14,7 +26,7 @@
         </form>
         <div class="funcoes">
             <a href="/Register">Não tenho conta</a>
-            <button>Acessar</button>
+            <button @click="acessHome()">Acessar</button>
         </div>
     </div>
 </template>

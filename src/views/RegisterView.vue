@@ -10,7 +10,7 @@ import FormRegister from '@/components/FormRegister.vue';
 </script>
 
 <template>
-    <div class="container">
+    <div class="fundo">
       <FormRegister></FormRegister>
       <Login class="square"></Login>
     </div>
@@ -18,7 +18,7 @@ import FormRegister from '@/components/FormRegister.vue';
 
 
 <style scoped>
-.container {
+.fundo {
   display: flex;
 }
 .square {

@@ -1,5 +1,17 @@
-<script setup>
-
+<script>
+import router from '@/router'
+    export default {
+        data() {
+            return {
+                router: this.$route,
+            }
+        },
+        methods: {
+            acessLogin() {
+                this.$router.push('/')
+            }
+        },
+    }
 </script>
 
 <template>
@@ -17,7 +29,7 @@
         </form>
         <div class="funcoes">
             <a href="/">Já tenho conta</a>
-            <button>Acessar</button>
+            <button @click="acessLogin()">Cadastrar</button>
         </div>
     </div>
 </template>
