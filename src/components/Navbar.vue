@@ -17,6 +17,7 @@ export default {
                 <img src="../assets/criarTarefa.svg" alt="New task" class="newPlus">
                 <p v-show="showing == true" class="taskHover">Criar tarefa</p>
             </div>
+            <img src="../assets/ajuda.svg" alt="Help vetor" class="help">
             <img src="../assets/Notification.svg" alt="Notification vetor" class="notification">
             <img src="../assets/Profile.svg" alt="Profile Pic" class="profile-pic">
         </div>
@@ -64,8 +65,6 @@ nav {
     width: 20px;
     height: 20px;
     border: 2px 0px 0px 0px;
-
-
 }
 
 .taskHover {
@@ -73,6 +72,7 @@ nav {
     display: flex;
     gap: 11px;
     justify-content: center;
+    align-items: center;
     cursor: pointer;
 }
 
