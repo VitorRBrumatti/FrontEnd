@@ -1,4 +1,5 @@
 <script>
+
 export default {
 
 }
@@ -9,11 +10,13 @@ export default {
         <div class="superior">
             <input class="nameTask" type="text" vmodel="nameTask" placeholder="Nome da tarefa">
             <input class="description" type="text" vmodel="description" placeholder="Descrição">
-            <!-- <input class="date" vmodel="date" type="date"> -->
+            <input class="date" vmodel="date" type="date">
         </div>
         <div class="inferior">
-            <button>Cancelar</button>
-            <button>Criar Tarefa</button>
+            <div class="buttons">
+                <button class="cancelar">Cancelar</button>
+                <button class="criar">Criar Tarefa</button>
+            </div>
         </div>
     </div>
 </template>
@@ -45,7 +48,10 @@ export default {
     width: 678px;
     height: 68px;
     top: 148px;
-    gap: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 30px;
 }
 
 .nameTask {
@@ -80,17 +86,47 @@ export default {
     line-height: 17.07px;
     border: 1px solid #E5E5E5;
 }
+
 input.date {
     font-family: Montserrat;
     color: #E5E5E5;
-    background-image: url('../assets/calendar.svg');
     background-repeat: no-repeat;
     background-size: 20px 20px;
     background-position: left center;
     padding-left: 8%;
+    padding-right: 20px;
+    cursor: pointer;
 }
-input.date::-webkit-calendar-picker-indicator {
-    display: none;
 
+input.date::-webkit-calendar-picker-indicator {
+    position: relative;
+    right: 115%;
+    width: 20px;
+    background-size: 20px 20px;
+    color: #E5E5E5;
+    background-position: center;
+    background-image: url('../assets/calendar.svg');
+}
+
+.buttons {
+    display: flex;
+    gap: 20px;
+}
+.criar {
+    cursor: pointer;
+    width: 122px;
+    height: 40px;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+}
+
+.cancelar {
+    cursor: pointer;
+    width: 122px;
+    height: 40px;
+    background: #F7F7F7;
+    color: #000000;
+    border: none;
 }
 </style>
