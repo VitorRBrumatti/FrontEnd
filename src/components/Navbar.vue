@@ -1,9 +1,13 @@
 <script>
-
 export default {
     data() {
         return {
             showing: false
+        }
+    },
+    methods: {
+        modalOpen() {
+            this.$emit('modalEmit')
         }
     },
 }
@@ -14,7 +18,7 @@ export default {
     <nav>
         <img src="../assets/rockLoose.png" alt="RockLoose" class="nav-rock">
         <div class="nav-menu">
-            <div class="taskHover" @mouseover="showing = true" @mouseout="showing = false">
+            <div class="taskHover" @click="modalOpen()" @mouseover="showing = true" @mouseout="showing = false">
                 <img src="../assets/criarTarefa.svg" alt="New task" class="newPlus">
                 <p v-show="showing == true" class="taskHover">Criar tarefa</p>
             </div>

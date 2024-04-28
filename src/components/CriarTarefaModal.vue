@@ -1,34 +1,70 @@
-<script>
-
-export default {
-
-}
-</script>
 
 <template>
-    <div class="nova-tarefa">
-        <div class="superior">
-            <input class="nameTask" type="text" vmodel="nameTask" placeholder="Nome da tarefa">
-            <input class="description" type="text" vmodel="description" placeholder="Descrição">
-            <input class="date" vmodel="date" type="date">
-        </div>
-        <div class="inferior">
-            <div class="buttons">
-                <button class="cancelar">Cancelar</button>
-                <button class="criar">Criar Tarefa</button>
+    <div class="backdrop" v-if="showModal">
+        <div class="nova-tarefa">
+            <div class="superior">
+                <input class="nameTask" type="text" v-model="nameTask" placeholder="Nome da tarefa">
+                <input class="description" type="text" v-model="descriptionTask" placeholder="Descrição">
+                <input class="date" v-model="taskExpire" type="date">
+            </div>
+            <div class="inferior">
+                <div class="buttons">
+                    <button class="cancelar" @click="closeModal()" >Cancelar</button>
+                    <button class="criar" @click="createTask()">Criar Tarefa</button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
+<script>
+import axios from 'axios';
+export default {
+    props: {
+        showModal: {
+            type: Boolean,
+            required: true,
+        },
+    },
+    methods: {
+        closeModal() {
+            this.$emit('update:showModal', false);
+        },
+        createTask() {
+            let data = {
+                title: this.nameTask,
+                description: this.descriptionTask,
+                due_date: this.taskExpire
+            }
+            console.log(data);
+            // axios.post('tarefa', data)
+            // .then(() => this.$emit('update:showModal', false))
+        }
+    },
+}
+</script>
+
 
 <style scoped>
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #0005;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
 .nova-tarefa {
     width: 678px;
     height: 216px;
     background: #FFFFFF;
-    border: 1px solid #E5E5E5;
     box-shadow: 2px 4px 10px 0px #0000000D;
+    overflow: hidden;
 }
 
 .superior {
