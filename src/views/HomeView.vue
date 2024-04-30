@@ -2,6 +2,11 @@
 import Navbar from '@/components/Navbar.vue';
 import CriarTarefaModal from '@/components/CriarTarefaModal.vue';
 import lateralBar from '@/components/lateralBar.vue';
+import EntradaPage from '@/components/EntradaPage.vue';
+import ExpiratedPage from '@/components/ExpiratedPage.vue';
+import TaskToday from '@/components/TaskToday.vue';
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -16,20 +21,27 @@ export default {
     components: {
         Navbar,
         CriarTarefaModal,
-        lateralBar
+        lateralBar,
+        EntradaPage,
+        ExpiratedPage,
+        TaskToday
+
+    },
+    created () {
+        axios.defaults.baseURL = 'http://127.0.0.1:8000/api/';
     },
 }
 </script>
 
 <template>
     <div class="fundo">
+        <lateralBar></lateralBar>
+        <EntradaPage></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
             <CriarTarefaModal v-model:showModal="showModal" />
         </div>
-            <lateralBar></lateralBar>
-        <span>Entrada</span>
-    </div>
+     </div>
 
 </template>
 
@@ -44,16 +56,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-
-span {
-    font-family: Montserrat;
-    font-size: 24px;
-    font-weight: 800;
-    line-height: 29.26px;
-    text-align: left;
-    color: #000000;
 }
 
 

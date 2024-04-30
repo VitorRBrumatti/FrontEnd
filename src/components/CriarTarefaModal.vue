@@ -36,9 +36,9 @@ export default {
                 description: this.descriptionTask,
                 due_date: this.taskExpire
             }
-            console.log(data);
-            // axios.post('tarefa', data)
-            // .then(() => this.$emit('update:showModal', false))
+            axios.post('/task', data)
+            .then(() => this.$emit('update:showModal', false))
+            
         }
     },
 }
