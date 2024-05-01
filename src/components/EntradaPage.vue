@@ -2,11 +2,32 @@
     <div class="title-container">
         <span id="title-page">Entrada</span>
     </div>
-    <div class="Tasks-show" v-for="task in Tasks" :key="task.id">
-        <input type="checkbox" name="checkbox" id="custom-checkbox">
-        <label for="custom-checkbox">{{ task.title }}</label>
-        <p class="description-task">{{ task.description }}</p>
-        <input class="date" type="date">
+    <div class="Tasks-show">
+        <div class="task-card" v-for="task in Tasks" :key="task.id">
+
+            <div>
+                <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
+                    :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" />
+                <label :for="'custom-checkbox' + task.id"></label>
+                <span for="'custom-checkbox' + task.id">{{ task.title }}</span>
+                <p class="description-task">{{ task.description }}</p>
+                <input class="date" type="date">
+            </div>
+            <div class="hover-icons">
+                <div class="hovered-edit">
+                    <span id="edit-tooltip">Editar tarefa</span>
+                    <img src="../assets/edit-icon.svg" alt="edit-icon">
+                </div>
+                <div class="hovered-due-date">
+                    <span id="date-tooltip">Definir vencimento</span>
+                    <img src="../assets/set-due-date.svg" alt="set-due-date">
+                </div>
+                <div class="hovered-delete">
+                    <img src="../assets/delete-icon.svg" alt="delete-icon">
+                    <span id="delete-tooltip">Excluir tarefa</span>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -15,22 +36,54 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            selectedTasks: {},
             Tasks: [],
+            taskIsChecked: [],
         }
     },
     methods: {
         getTasks() {
             console.log('getTask is working');
-            axios.get('/task/0')
+            axios.get('/task')
                 .then((response) => {
                     console.log(response);
-                    this.Tasks = response.data.data
+                    this.Tasks = response.data.data;
+                    this.taskIsChecked = this.Tasks.map(task => ({ id: task.id, status: task.status }));
                     console.log(this.Tasks);
+                });
+        },
+        IsTaskChecked(task) {
+            return this.taskIsChecked.some(item => item.id === task.id && item.status === 'completed');
+        },
+        updateTaskStatus(task) {
+            const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+
+            axios.put(`/task/${task.id}`, { status: newStatus })
+                .then(response => {
+                    console.log(`Task updated successfully: ${response.data}`);
+
+                    const taskToUpdate = this.taskIsChecked.find(item => item.id === task.id);
+
+                    if (taskToUpdate) {
+                        taskToUpdate.status = newStatus;
+                    } else {
+                        this.taskIsChecked.push({ id: task.id, status: newStatus });
+                    }
+
+                    task.status = newStatus;
+                })
+                .catch(error => {
+                    console.error(`Error updating task: ${error}`);
                 });
         }
     },
-    created () {
+    created() {
         this.getTasks();
+    },
+    watch: {
+        data(newValue, oldValue) {
+
+        }
     },
 }
 </script>
@@ -46,7 +99,7 @@ export default {
     height: 109px;
     align-self: self-start;
     margin-top: 80px;
-    margin-left: 5%;
+    margin-left: 1.5%;
     display: flex;
     align-items: flex-end;
 }
@@ -62,22 +115,109 @@ export default {
 .Tasks-show {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
-    border: 1px solid #E5E5E5;
-    padding: 15px 22px;
     gap: 15px;
 }
 
-.Tasks-show input[type="checkbox"] {
-    display: none;
+.content-tasks {
+    display: block;
 }
 
-.Tasks-show label {
+.hover-icons {
+    display: flex;
+    position: relative;
+    gap: 25px;
+    opacity: 0;
+    transition: 0.3s opacity ease;
+}
+
+.hover-icons img {
+    display: flex;
+}
+
+.hovered-edit:hover #edit-tooltip,
+.hovered-due-date:hover #date-tooltip,
+.hovered-delete:hover #delete-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+#edit-tooltip {
+    position: absolute;
+    right: 90%;
+    bottom: 120%;
+    background-color: #000000CC;
+    color: #FFFFFF;
+    padding: 5px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.85px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+
+}
+
+#date-tooltip {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.85px;
+    right: 50%;
+    bottom: 130%;
+    background-color: #000000CC;
+    color: #FFFFFF;
+    padding: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+
+}
+
+#delete-tooltip {
+    position: absolute;
+    right: 8%;
+    bottom: 130%;
+    background-color: #000000CC;
+    color: #FFFFFF;
+    padding: 5px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.85px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+
+}
+
+.task-card {
+    border: 1px solid #E5E5E5;
+    padding: 15px 22px;
+    width: 678px;
+    height: 109px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-card:hover .hover-icons {
+    opacity: 1;
+}
+
+.task-card input[type="checkbox"] {
+    display: none;
+
+}
+
+.task-card span {
     color: #000000;
     font-weight: 500;
 }
 
-.Tasks-show label:before {
+.task-card label:before {
     content: '';
     width: 18px;
     height: 18px;
@@ -90,7 +230,7 @@ export default {
     transition: background-color 0.3s ease;
 }
 
-.Tasks-show input[type="checkbox"]:checked+label:before {
+.task-card input[type="checkbox"]:checked+label:before {
     background-color: rgb(0, 0, 0);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 10 10'%3E%3Cg class='nc-icon-wrapper' stroke-width='1' fill='%23555555'%3E%3Cpath fill='none' stroke='%23FFFFFF' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10' data-cap='butt' d='M2.83 4.72l1.58 1.58 2.83-2.83'/%3E%3C/g%3E%3C/svg%3E");
     background-position: center;
@@ -130,7 +270,8 @@ input.date::-webkit-calendar-picker-indicator {
     background-position: center;
     background-image: url('../assets/calendar.svg');
 }
-input.date:hover{
+
+input.date:hover {
     color: #009488;
     background: #0094881A;
 }
