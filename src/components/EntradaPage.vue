@@ -2,7 +2,7 @@
     <div class="title-container">
         <span id="title-page">Entrada</span>
     </div>
-    <div class="Tasks-show">
+    <div class="Tasks-show" >
         <div class="task-card" v-for="task in Tasks" :key="task.id">
 
             <div>
@@ -11,19 +11,27 @@
                 <label :for="'custom-checkbox' + task.id"></label>
                 <span for="'custom-checkbox' + task.id">{{ task.title }}</span>
                 <p class="description-task">{{ task.description }}</p>
-                <input class="date" type="date">
+                <div class="date-container">
+                    <input class="date " type="date" :value="formatDueDate(task.due_date)"
+                        v-on:change="updateTaskStatus(task)" :class="{
+                            'today': isToday(task.due_date),
+                            'past-due': isPastDue(task.due_date),
+                            'future': !isToday(task.due_date) && !isPastDue(task.due_date)
+                        }" >
+                    <div class="today-overlay" v-if="isToday(task.due_date)">Hoje</div>
+                </div>
             </div>
             <div class="hover-icons">
                 <div class="hovered-edit">
                     <span id="edit-tooltip">Editar tarefa</span>
-                    <img src="../assets/edit-icon.svg" alt="edit-icon">
+                    <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal()">
                 </div>
                 <div class="hovered-due-date">
                     <span id="date-tooltip">Definir vencimento</span>
                     <img src="../assets/set-due-date.svg" alt="set-due-date">
                 </div>
                 <div class="hovered-delete">
-                    <img src="../assets/delete-icon.svg" alt="delete-icon">
+                    <img src="../assets/delete-icon.svg" alt="delete-icon" @click="selectedTasks = task.id ,deleteTask(task.id)">
                     <span id="delete-tooltip">Excluir tarefa</span>
                 </div>
             </div>
@@ -50,6 +58,7 @@ export default {
                     this.Tasks = response.data.data;
                     this.taskIsChecked = this.Tasks.map(task => ({ id: task.id, status: task.status }));
                     console.log(this.Tasks);
+                    console.log(this.Tasks.due_date);
                 });
         },
         IsTaskChecked(task) {
@@ -75,15 +84,38 @@ export default {
                 .catch(error => {
                     console.error(`Error updating task: ${error}`);
                 });
+        },
+        openEditModal() {
+            this.$emit('open-edit-modal');
+        },
+        formatDueDate(dueDate) {
+            const dateObject = new Date(dueDate);
+            const formattedDate = dateObject.toISOString().split('T')[0];
+            return formattedDate;
+        },
+        isToday(date) {
+            const today = new Date();
+            const taskDate = new Date(date);
+            return taskDate.getFullYear() === today.getFullYear() &&
+                taskDate.getMonth() === today.getMonth() &&
+                taskDate.getDate() === today.getDate();
+        },
+        isPastDue(date) {
+            const today = new Date();
+            const taskDate = new Date(date);
+            return taskDate < today && !this.isToday(date);
+        },
+        deleteTask(task) {
+            axios.delete(`/task/${task}`)
+                .then(() => {
+                    let deletedTask = this.Tasks.findIndex(item => item.id ===
+                task)
+                this.Tasks.splice(deletedTask, 1);
+                })
         }
     },
     created() {
         this.getTasks();
-    },
-    watch: {
-        data(newValue, oldValue) {
-
-        }
     },
 }
 </script>
@@ -116,7 +148,11 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 15px;
-}
+    align-self: self-start;
+    margin-top: 14%;
+    height: 65vh;
+    overflow: auto;
+ }
 
 .content-tasks {
     display: block;
@@ -132,6 +168,8 @@ export default {
 
 .hover-icons img {
     display: flex;
+    cursor: pointer;
+
 }
 
 .hovered-edit:hover #edit-tooltip,
@@ -140,6 +178,7 @@ export default {
     opacity: 1;
     visibility: visible;
     transition-delay: 0s;
+
 }
 
 #edit-tooltip {
@@ -202,6 +241,9 @@ export default {
     justify-content: space-between;
     align-items: center;
 }
+.task-card:hover {
+    background-color: #FAFAFA;
+}
 
 .task-card:hover .hover-icons {
     opacity: 1;
@@ -253,26 +295,91 @@ export default {
     line-height: 17.07px;
     border: 1px solid #E5E5E5;
     margin-left: 48px;
+    pointer-events: none;
 }
 
 input.date {
     font-family: Montserrat;
     color: #E5E5E5;
-    padding-left: 12%;
+    text-align: center;
     cursor: pointer;
 }
 
 input.date::-webkit-calendar-picker-indicator {
     position: relative;
-    right: 115%;
+    right: 85%;
     background-size: 17px;
     color: #E5E5E5;
     background-position: center;
     background-image: url('../assets/calendar.svg');
 }
 
-input.date:hover {
+.date-container {
+    position: relative;
+}
+
+.today-overlay {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
     color: #009488;
+    padding: 0 5px;
+    border-radius: 3px;
+    font-weight: 500;
+    line-height: 17.07px;
+    text-align: left;
+}
+
+input.today {
     background: #0094881A;
+    color: #00948800 !important;
+    font-weight: 500;
+    width: 100px;
+    height: 35px;
+    text-align: center;
+    padding-left: 30px;
+    line-height: 30px;
+
+}
+
+input.today::-webkit-calendar-picker-indicator {
+    position: relative;
+    background-image: url('../assets/calendar-valid.svg');
+    right: 105%;
+}
+
+input.past-due {
+    background: #D314081A;
+    color: #D31408 !important;
+    font-weight: 500;
+    width: 135px;
+    height: 35px;
+    text-align: center;
+    padding-left: 30px;
+    line-height: 30px;
+}
+
+input.past-due::-webkit-calendar-picker-indicator {
+    position: relative;
+    background-image: url('../assets/calendar-expired.svg');
+    right: 105%;
+}
+
+input.future {
+    background: #0094881A;
+    color: #009488 !important;
+    font-weight: 500;
+    width: 135px;
+    height: 35px;
+    text-align: center;
+    padding-left: 30px;
+    line-height: 30px;
+}
+
+input.future::-webkit-calendar-picker-indicator {
+    position: relative;
+    background-image: url('../assets/calendar-valid.svg');
+    right: 105%;
 }
 </style>

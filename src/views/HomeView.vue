@@ -36,10 +36,10 @@ export default {
 <template>
     <div class="fundo">
         <lateralBar></lateralBar>
-        <EntradaPage></EntradaPage>
+        <EntradaPage @open-edit-modal="openModal()"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
-            <CriarTarefaModal v-model:showModal="showModal" />
+            <CriarTarefaModal v-model:showModal="showModal"  />
         </div>
      </div>
 
