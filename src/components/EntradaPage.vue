@@ -24,7 +24,7 @@
             <div class="hover-icons">
                 <div class="hovered-edit">
                     <span id="edit-tooltip">Editar tarefa</span>
-                    <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal()">
+                    <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)">
                 </div>
                 <div class="hovered-due-date">
                     <span id="date-tooltip">Definir vencimento</span>
@@ -85,8 +85,8 @@ export default {
                     console.error(`Error updating task: ${error}`);
                 });
         },
-        openEditModal() {
-            this.$emit('open-edit-modal');
+        openEditModal(task) {
+            this.$emit('open-edit-modal', task);
         },
         formatDueDate(dueDate) {
             const dateObject = new Date(dueDate);
@@ -319,10 +319,9 @@ input.date::-webkit-calendar-picker-indicator {
 }
 
 .today-overlay {
-    position: absolute;
-    top: 50%;
-    left: 55%;
-    transform: translate(-50%, -50%);
+    position: fixed;
+    margin-left: 6.5%;
+    transform: translate(-50%, -150%);
     color: #009488;
     padding: 0 5px;
     border-radius: 3px;

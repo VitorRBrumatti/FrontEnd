@@ -25,6 +25,11 @@ export default {
             type: Boolean,
             required: true,
         },
+        selectedTask: {
+            type: Object,
+            required: false,
+        }
+        
     },
     methods: {
         closeModal() {
@@ -36,12 +41,31 @@ export default {
                 description: this.descriptionTask,
                 due_date: this.taskExpire
             }
+            if (this.selectedTask.id) {
+                axios.put(`/task/${this.selectedTask.id}`, data)
+                    .then(() => this.$emit('update:showModal', false))
+            }
             axios.post('/task', data)
             .then(() => this.$emit('update:showModal', false))
             
         }
     },
+    watch: {
+        data(newValue, oldValue) {
+            if (newValue === true && this.selectedTask.id) {
+                this.nameTask = this.selectedTask.title
+                this.descriptionTask = this.selectedTask.description
+                this.taskExpire= new Date(this.selectedTask.due_date).toISOString().substr(0,10)
+            } else {
+                this.nameTask = '';
+                this.descriptionTask = '';
+                this.taskExpire = ''
+            }
+        }
+    }
 }
+    
+
 </script>
 
 

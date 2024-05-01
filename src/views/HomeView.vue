@@ -11,10 +11,15 @@ export default {
     data() {
         return {
             showModal: false,
+            selectedTask: {},
         }
     },
     methods: {
         openModal() {
+            this.showModal = true;
+        },
+        OpenEditModal(task) {
+            this.selectedTask = task
             this.showModal = true;
         }
     },
@@ -36,10 +41,10 @@ export default {
 <template>
     <div class="fundo">
         <lateralBar></lateralBar>
-        <EntradaPage @open-edit-modal="openModal()"></EntradaPage>
+        <EntradaPage @open-edit-modal="OpenEditModal()"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
-            <CriarTarefaModal v-model:showModal="showModal"  />
+            <CriarTarefaModal v-model:showModal="showModal"  :selectedTask="selectedTask"/>
         </div>
      </div>
 
