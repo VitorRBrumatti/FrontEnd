@@ -20,7 +20,7 @@ export default {
             this.showModal = true;
         },
         OpenEditModal(task) {
-            this.selectedTask = task
+            this.selectedTask = task,
             this.showModal = true;
         }
     },

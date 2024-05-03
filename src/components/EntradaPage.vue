@@ -320,7 +320,7 @@ input.date::-webkit-calendar-picker-indicator {
 
 .today-overlay {
     position: fixed;
-    margin-left: 6.5%;
+    margin-left: 6%;
     transform: translate(-50%, -150%);
     color: #009488;
     padding: 0 5px;
