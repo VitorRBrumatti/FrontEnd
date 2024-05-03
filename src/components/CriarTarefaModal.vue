@@ -1,4 +1,3 @@
-
 <template>
     <div class="backdrop" v-if="showModal">
         <div class="nova-tarefa">
@@ -9,8 +8,9 @@
             </div>
             <div class="inferior">
                 <div class="buttons">
-                    <button class="cancelar" @click="closeModal()" >Cancelar</button>
-                    <button class="criar" @click="createTask()">Criar Tarefa</button>
+                    <button class="cancelar" @click="closeModal()">Cancelar</button>
+                    <button class="criar" @click="createTask()">{{ selectedTask.id ? 'Editar' : 'Criar' }}
+                        Tarefa</button>
                 </div>
             </div>
         </div>
@@ -20,6 +20,13 @@
 <script>
 import axios from 'axios';
 export default {
+    data() {
+        return {
+            nameTask: '',
+            descriptionTask: '',
+            taskExpire: '',
+        }
+    },
     props: {
         showModal: {
             type: Boolean,
@@ -29,7 +36,7 @@ export default {
             type: Object,
             required: false,
         }
-        
+
     },
     methods: {
         closeModal() {
@@ -44,27 +51,29 @@ export default {
             if (this.selectedTask.id) {
                 axios.put(`/task/${this.selectedTask.id}`, data)
                     .then(() => this.$emit('update:showModal', false))
+            } 
+            else {
+                axios.post('/task', data)
+                    .then(() => this.$emit('update:showModal', false))
             }
-            axios.post('/task', data)
-            .then(() => this.$emit('update:showModal', false))
-            
+
         }
     },
     watch: {
-        data(newValue, oldValue) {
+        showModal(newValue, oldValue) {
             if (newValue === true && this.selectedTask.id) {
-                this.nameTask = this.selectedTask.title
-                this.descriptionTask = this.selectedTask.description
-                this.taskExpire= new Date(this.selectedTask.due_date).toISOString().substr(0,10)
-            } else {
+                this.nameTask = this.selectedTask.title;
+                this.descriptionTask = this.selectedTask.description;
+                this.taskExpire = new Date(this.selectedTask.due_date).toISOString().substr(0, 10);
+            } else if (newValue === true) {
                 this.nameTask = '';
                 this.descriptionTask = '';
-                this.taskExpire = ''
+                this.taskExpire = '';
             }
         }
     }
 }
-    
+
 
 </script>
 
@@ -81,7 +90,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-} 
+}
 
 .nova-tarefa {
     width: 678px;
@@ -172,6 +181,7 @@ input.date::-webkit-calendar-picker-indicator {
     display: flex;
     gap: 20px;
 }
+
 .criar {
     cursor: pointer;
     width: 122px;
