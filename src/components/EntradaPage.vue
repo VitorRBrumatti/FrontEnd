@@ -4,21 +4,21 @@
     </div>
     <div class="Tasks-show">
         <div class="task-card" v-for="task in Tasks" :key="task.id">
-            
+
             <div>
                 <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
-                :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" />
+                    :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" />
                 <label :for="'custom-checkbox' + task.id"></label>
                 <span for="'custom-checkbox' + task.id">{{ task.title }}</span>
                 <p class="description-task">{{ task.description }}</p>
-                <div class="date-container">
-                    <input class="date" type="date" :value="formatDueDate(task.due_date)"
-                    v-on:change="updateTaskStatus(task)" :class="{
-                        'today': isToday(task.due_date),
-                        'past-due': isPastDue(task.due_date),
-                        'future': !isToday(task.due_date) && !isPastDue(task.due_date)
-                    }">
-                    <div class="today-overlay" v-if="isToday(task.due_date)">Hoje</div>
+                <div :class="{
+                    'today': isToday(task.due_date),
+                    'future': !isToday(task.due_date) && !isPastDue(task.due_date),
+                    'past-due': isPastDue(task.due_date)
+                }">
+                    <img src="../assets/calendar-valid.svg" v-if="!isPastDue(task.due_date)">
+                    <img src="../assets/calendar-expired.svg" v-if="isPastDue(task.due_date)">
+                    <p>{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
                 </div>
             </div>
             <div class="hover-icons">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="hovered-delete">
                     <img src="../assets/delete-icon.svg" alt="delete-icon"
-                    @click="selectedTasks = task.id, deleteTask(task.id)">
+                        @click="selectedTasks = task.id, deleteTask(task.id)">
                     <span id="delete-tooltip">Excluir tarefa</span>
                 </div>
             </div>
@@ -322,66 +322,104 @@ input.date::-webkit-calendar-picker-indicator {
     position: relative;
 }
 
-.today-overlay {
-    position: relative;
-    top: 1px;
-    left: -72px;
-    transform: translate(65%, -150%);
-    color: #009488;
-    padding: 0 5px;
-    font-weight: 500;
-    line-height: 17.07px;
-}
-
-input.today {
+.today {
     background: #0094881A;
     color: #00948800 !important;
     font-weight: 500;
-    width: 100px;
-    height: 35px;
-    text-align: center;
-    padding-left: 30px;
-    line-height: 30px;
+    width: 72px;
+    height: 25px;
+    margin-left: 48px;
+    margin-top: 11px;
+    display: flex;
+
 
 }
 
-input.today::-webkit-calendar-picker-indicator {
+.today p {
+    color: #009488;
     position: relative;
-    background-image: url('../assets/calendar-valid.svg');
-    right: 105%;
+    left: 12px;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 17.07px;
+    text-align: left;
+    top: 4px;
 }
 
-input.past-due {
+.today img {
+    width: 13;
+    height: 14;
+    top: -3px;
+    left: 5px;
+    margin-top: 6px;
+    position: relative;
+
+}
+
+
+.past-due {
     background: #D314081A;
     color: #D31408 !important;
     font-weight: 500;
-    width: 135px;
-    height: 35px;
-    text-align: center;
-    padding-left: 30px;
-    line-height: 30px;
-}
-
-input.past-due::-webkit-calendar-picker-indicator {
+    width: 130px;
+    height: 30px;
     position: relative;
-    background-image: url('../assets/calendar-expired.svg');
-    right: 105%;
+    left: 47px;
+    display: flex;
+    top: 5px;
 }
 
-input.future {
+.past-due img {
+    width: 13;
+    height: 14;
+    top: -6px;
+    left: 5px;
+    margin-top: 12px;
+    position: relative;
+}
+
+.past-due p {
+    color: #D31408;
+    position: relative;
+    left: 16px;
+    font-family: Montserrat;
+    font-size: 15px;
+    font-weight: 500;
+    top: 4px;
+}
+
+.future {
     background: #0094881A;
     color: #009488 !important;
     font-weight: 500;
-    width: 135px;
-    height: 35px;
-    text-align: center;
-    padding-left: 30px;
-    line-height: 30px;
+    width: 130px;
+    height: 30px;
+    position: relative;
+    left: 49px;
+    top: 5px;
+    display: flex;
+
 }
 
-input.future::-webkit-calendar-picker-indicator {
+.future img {
+    width: 13;
+    height: 14;
+    top: -6px;
+    left: 5px;
+    margin-top: 12px;
     position: relative;
-    background-image: url('../assets/calendar-valid.svg');
-    right: 105%;
+
+}
+
+.future p {
+    color: #009488;
+    position: relative;
+    left: 16px;
+    font-family: Montserrat;
+    font-size: 15px;
+    font-weight: 500;
+    top: 4px;
+
 }
 </style>
