@@ -2,22 +2,22 @@
     <div class="title-container">
         <span id="title-page">Entrada</span>
     </div>
-    <div class="Tasks-show" >
+    <div class="Tasks-show">
         <div class="task-card" v-for="task in Tasks" :key="task.id">
-
+            
             <div>
                 <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
-                    :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" />
+                :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" />
                 <label :for="'custom-checkbox' + task.id"></label>
                 <span for="'custom-checkbox' + task.id">{{ task.title }}</span>
                 <p class="description-task">{{ task.description }}</p>
                 <div class="date-container">
-                    <input class="date " type="date" :value="formatDueDate(task.due_date)"
-                        v-on:change="updateTaskStatus(task)" :class="{
-                            'today': isToday(task.due_date),
-                            'past-due': isPastDue(task.due_date),
-                            'future': !isToday(task.due_date) && !isPastDue(task.due_date)
-                        }" >
+                    <input class="date" type="date" :value="formatDueDate(task.due_date)"
+                    v-on:change="updateTaskStatus(task)" :class="{
+                        'today': isToday(task.due_date),
+                        'past-due': isPastDue(task.due_date),
+                        'future': !isToday(task.due_date) && !isPastDue(task.due_date)
+                    }">
                     <div class="today-overlay" v-if="isToday(task.due_date)">Hoje</div>
                 </div>
             </div>
@@ -31,7 +31,8 @@
                     <img src="../assets/set-due-date.svg" alt="set-due-date">
                 </div>
                 <div class="hovered-delete">
-                    <img src="../assets/delete-icon.svg" alt="delete-icon" @click="selectedTasks = task.id ,deleteTask(task.id)">
+                    <img src="../assets/delete-icon.svg" alt="delete-icon"
+                    @click="selectedTasks = task.id, deleteTask(task.id)">
                     <span id="delete-tooltip">Excluir tarefa</span>
                 </div>
             </div>
@@ -65,13 +66,13 @@ export default {
             return this.taskIsChecked.some(item => item.id === task.id && item.status === 'completed');
         },
         updateTaskStatus(task) {
-            const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+            let newStatus = task.status === 'completed' ? 'pending' : 'completed';
 
             axios.put(`/task/${task.id}`, { status: newStatus })
                 .then(response => {
                     console.log(`Task updated successfully: ${response.data}`);
 
-                    const taskToUpdate = this.taskIsChecked.find(item => item.id === task.id);
+                    let taskToUpdate = this.taskIsChecked.find(item => item.id === task.id);
 
                     if (taskToUpdate) {
                         taskToUpdate.status = newStatus;
@@ -94,23 +95,23 @@ export default {
             return formattedDate;
         },
         isToday(date) {
-            const today = new Date();
-            const taskDate = new Date(date);
+            let today = new Date();
+            let taskDate = new Date(date);
             return taskDate.getFullYear() === today.getFullYear() &&
                 taskDate.getMonth() === today.getMonth() &&
                 taskDate.getDate() === today.getDate();
         },
         isPastDue(date) {
-            const today = new Date();
-            const taskDate = new Date(date);
+            let today = new Date();
+            let taskDate = new Date(date);
             return taskDate < today && !this.isToday(date);
         },
         deleteTask(task) {
             axios.delete(`/task/${task}`)
                 .then(() => {
                     let deletedTask = this.Tasks.findIndex(item => item.id ===
-                task)
-                this.Tasks.splice(deletedTask, 1);
+                        task)
+                    this.Tasks.splice(deletedTask, 1);
                 })
         }
     },
@@ -152,7 +153,8 @@ export default {
     margin-top: 14%;
     height: 65vh;
     overflow: auto;
- }
+    position: absolute;
+}
 
 .content-tasks {
     display: block;
@@ -241,6 +243,7 @@ export default {
     justify-content: space-between;
     align-items: center;
 }
+
 .task-card:hover {
     background-color: #FAFAFA;
 }
@@ -287,6 +290,7 @@ export default {
 }
 
 .date {
+    position: relative;
     width: 199px;
     height: 40px;
     font-family: Montserrat;
@@ -319,15 +323,14 @@ input.date::-webkit-calendar-picker-indicator {
 }
 
 .today-overlay {
-    position: fixed;
-    margin-left: 6%;
-    transform: translate(-50%, -150%);
+    position: relative;
+    top: 1px;
+    left: -72px;
+    transform: translate(65%, -150%);
     color: #009488;
     padding: 0 5px;
-    border-radius: 3px;
     font-weight: 500;
     line-height: 17.07px;
-    text-align: left;
 }
 
 input.today {

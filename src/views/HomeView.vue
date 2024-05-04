@@ -4,7 +4,6 @@ import CriarTarefaModal from '@/components/CriarTarefaModal.vue';
 import lateralBar from '@/components/lateralBar.vue';
 import EntradaPage from '@/components/EntradaPage.vue';
 import ExpiratedPage from '@/components/ExpiratedPage.vue';
-import TaskToday from '@/components/TaskToday.vue';
 import axios from 'axios';
 
 export default {
@@ -30,7 +29,6 @@ export default {
         lateralBar,
         EntradaPage,
         ExpiratedPage,
-        TaskToday
 
     },
     created () {
