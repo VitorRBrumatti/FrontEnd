@@ -3,13 +3,14 @@ import Navbar from '@/components/Navbar.vue';
 import CriarTarefaModal from '@/components/CriarTarefaModal.vue';
 import lateralBar from '@/components/lateralBar.vue';
 import EntradaPage from '@/components/EntradaPage.vue';
-import ExpiratedPage from '@/components/ExpiratedPage.vue';
+import VisualizeTask from '@/components/VisualizeTask.vue';
 import axios from 'axios';
 
 export default {
     data() {
         return {
             showModal: false,
+            showVisualize: false,
             selectedTask: {},
         }
     },
@@ -21,6 +22,10 @@ export default {
         OpenEditModal(task) {
             this.selectedTask = task,
             this.showModal = true;
+        },
+        OpenVisualizeTask(task) {
+            this.selectedTask = task,
+            this.showVisualize = true;
         }
     },
     components: {
@@ -28,7 +33,7 @@ export default {
         CriarTarefaModal,
         lateralBar,
         EntradaPage,
-        ExpiratedPage,
+        VisualizeTask,
 
     },
     created () {
@@ -40,11 +45,12 @@ export default {
 <template>
     <div class="fundo">
         <lateralBar></lateralBar>
-        <EntradaPage @open-edit-modal="OpenEditModal"></EntradaPage>
+        <EntradaPage @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
-            <CriarTarefaModal v-model:showModal="showModal"  :selectedTask="selectedTask"/>
+            <CriarTarefaModal v-model:showModal="showModal" :selectedTask="selectedTask"/>
         </div>
+        <VisualizeTask v-model:showVisualize="showVisualize" :selectedTask="selectedTask" @checkbox-changed="updateTaskStatus"></VisualizeTask>
      </div>
 
 </template>

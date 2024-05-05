@@ -3,36 +3,36 @@
         <span id="title-page">Entrada</span>
     </div>
     <div class="Tasks-show">
-        <div class="task-card" v-for="task in Tasks" :key="task.id">
+        <div class="task-card" v-for="task in Tasks" :key="task.id" @click="visualizeTask(task)">
 
             <div>
                 <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
-                    :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" />
-                <label :for="'custom-checkbox' + task.id"></label>
+                    :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" @click.stop="''" />
+                <label :for="'custom-checkbox' + task.id" @click.stop="''"></label>
                 <span for="'custom-checkbox' + task.id">{{ task.title }}</span>
                 <p class="description-task">{{ task.description }}</p>
                 <div :class="{
                     'today': isToday(task.due_date),
                     'future': !isToday(task.due_date) && !isPastDue(task.due_date),
                     'past-due': isPastDue(task.due_date)
-                }">
+                }" @click.stop="''">
                     <img src="../assets/calendar-valid.svg" v-if="!isPastDue(task.due_date)">
                     <img src="../assets/calendar-expired.svg" v-if="isPastDue(task.due_date)">
-                    <p>{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
+                    <p >{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
                 </div>
             </div>
             <div class="hover-icons">
                 <div class="hovered-edit">
                     <span id="edit-tooltip">Editar tarefa</span>
-                    <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)">
+                    <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)" @click.stop="''">
                 </div>
                 <div class="hovered-due-date">
                     <span id="date-tooltip">Definir vencimento</span>
-                    <img src="../assets/set-due-date.svg" alt="set-due-date">
+                    <img src="../assets/set-due-date.svg" alt="set-due-date" @click.stop="''">
                 </div>
                 <div class="hovered-delete">
                     <img src="../assets/delete-icon.svg" alt="delete-icon"
-                        @click="selectedTasks = task.id, deleteTask(task.id)">
+                        @click="selectedTasks = task.id, deleteTask(task.id)" @click.stop="''">
                     <span id="delete-tooltip">Excluir tarefa</span>
                 </div>
             </div>
@@ -113,7 +113,10 @@ export default {
                         task)
                     this.Tasks.splice(deletedTask, 1);
                 })
-        }
+        },
+        visualizeTask(task) {
+            this.$emit('open-visualize-task', task);
+        },
     },
     created() {
         this.getTasks();
@@ -242,6 +245,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
 
 .task-card:hover {
@@ -289,38 +293,6 @@ export default {
     margin-left: 48px;
 }
 
-.date {
-    position: relative;
-    width: 199px;
-    height: 40px;
-    font-family: Montserrat;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 17.07px;
-    border: 1px solid #E5E5E5;
-    margin-left: 48px;
-    pointer-events: none;
-}
-
-input.date {
-    font-family: Montserrat;
-    color: #E5E5E5;
-    text-align: center;
-    cursor: pointer;
-}
-
-input.date::-webkit-calendar-picker-indicator {
-    position: relative;
-    right: 85%;
-    background-size: 17px;
-    color: #E5E5E5;
-    background-position: center;
-    background-image: url('../assets/calendar.svg');
-}
-
-.date-container {
-    position: relative;
-}
 
 .today {
     background: #0094881A;
@@ -331,7 +303,7 @@ input.date::-webkit-calendar-picker-indicator {
     margin-left: 48px;
     margin-top: 11px;
     display: flex;
-
+    cursor: default;
 
 }
 
@@ -368,6 +340,7 @@ input.date::-webkit-calendar-picker-indicator {
     left: 47px;
     display: flex;
     top: 5px;
+    cursor: default;
 }
 
 .past-due img {
@@ -399,7 +372,7 @@ input.date::-webkit-calendar-picker-indicator {
     left: 49px;
     top: 5px;
     display: flex;
-
+    cursor: default;
 }
 
 .future img {
