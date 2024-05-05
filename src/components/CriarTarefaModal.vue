@@ -50,11 +50,11 @@ export default {
             }
             if (this.selectedTask.id) {
                 axios.put(`/task/${this.selectedTask.id}`, data)
-                    .then(() => this.$emit('update:showModal', false));
-            } 
+                .then(() => this.$emit('update:showModal', false))
+            }
             else {
                 axios.post('/task', data)
-                    .then(() => this.$emit('update:showModal', false))
+                .then(() => this.$emit('update:showModal', false))
             }
 
         }

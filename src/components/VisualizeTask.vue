@@ -2,22 +2,34 @@
     <div class="background" v-if="showVisualize">
         <div class="task-visualizer">
             <div class="top">
+                <div class="menu-task" v-show="showMenu === true">
+                    <div class="copy-link">
+                        <img src="../assets/copy-icon.svg" alt="copy-icon">
+                        <p>Copiar Link da tarefa</p>
+                    </div>
+                    <div class="duplicate">
+                        <img src="../assets/duplicate-icon.svg" alt="duplicate-icon">
+                        <p>Duplicar tarefa</p>
+                    </div>
+                    <div class="impress">
+                        <img src="../assets/impress-icon.svg" alt="impress-icon">
+                        <p>Imprimir tarefa</p>
+                    </div>
+                    <div class="menu-delete" @click="deleteMenu(selectedTask)">
+                        <img src="../assets/delete-red.svg" alt="delete-red">
+                        <p>Excluir tarefa</p>
+                    </div>
+                </div>
                 <div class="date" :class="{
                     'on-time': !isPastDue(selectedTask.due_date),
                     'expired': isPastDue(selectedTask.due_date)
                 }">
-                <div class="menu-task">
-                    <div>Copiar Link</div>
-                    <div>Duplicar tarefa</div>
-                    <div>Imprimir</div>
-                    <div>Excluir</div>
-                </div>
                     <img src="../assets/calendar-valid.svg" v-if="!isPastDue(selectedTask.due_date)">
                     <img src="../assets/calendar-expired.svg" v-if="isPastDue(selectedTask.due_date)">
                     <p>{{ !isPastDue(selectedTask.due_date) ? "No prazo" : "Expirado" }}</p>
                 </div>
                 <div class="icons">
-                    <img class="tree-points" src="../assets/tree-points.svg" alt="tree-points">
+                    <img class="tree-points" src="../assets/tree-points.svg" alt="tree-points" @click="openMenu">
                     <img class="close-icon" src="../assets/close-icon.svg" alt="close-icon" @click="closeVisualize()">
                 </div>
             </div>
@@ -28,8 +40,22 @@
                     <label for="custom-checkbox"></label>
                     <span class="title">{{ selectedTask.title }}</span>
                     <p class="description">{{ selectedTask.description }}</p>
-                    <div class="subtask">
 
+                    <div class="subtask">
+                        <div class="Title-section">
+                            <span>Subtarefas</span>
+                        </div>
+                        <div class="Subtask-organize">
+                            <div class="showSubtask" v-for="Subtask in selectedTask.subtasks"
+                                :key="selectedTask.subtasks.id">
+                                <input type="checkbox" :name="'checkbox' + Subtask.id"
+                                    :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
+                                    @change="updateTaskStatus" />
+                                <label :for="'custom-checkbox' + Subtask.id"></label>
+                                <span>{{ Subtask.title_subtask }}</span>
+                            </div>
+                        </div>
+                        <button class="create-subtask" @click="openCreateSubTask()">Criar Subtarefas</button>
                     </div>
                 </div>
                 <div class="lateralInfos">
@@ -69,12 +95,15 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
+
     data() {
         return {
             nameTask: '',
             descriptionTask: '',
             taskExpire: '',
+            showMenu: false,
         }
     },
     props: {
@@ -134,6 +163,27 @@ export default {
             let formatted_date = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year + ' às ' + (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
             return formatted_date;
         },
+        openMenu() {
+            if (this.showMenu === true) {
+                this.showMenu = false
+            }
+            else {
+                this.showMenu = true;
+            }
+        },
+        deleteMenu(selectedTask) {
+            axios.delete(`/task/${selectedTask.id}`)
+                .then(() => {
+                    console.log('foi');
+                    this.$emit('update:showVisualize', false);
+                    let deletedTask = this.selectedTask.findIndex(item => item.id ===
+                        selectedTask)
+                    this.selectedTask.splice(deletedTask, 1);
+                })
+        },
+        openCreateSubTask() {
+            this.$emit('show-Sub-Task');
+        }
     },
 }
 </script>
@@ -247,6 +297,25 @@ export default {
 
 .close-icon {
     cursor: pointer;
+}
+
+.tree-points {
+    cursor: pointer;
+}
+
+.Title-section {
+    margin-top: 30px;
+    height: 40px;
+    border-bottom: 1px solid #E5E5E5;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 17.07px;
+    text-align: left;
+
+}
+.Title-section span {
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .expired {
@@ -363,8 +432,46 @@ export default {
 
 .menu-task {
     position: absolute;
-    background-color: #000000;
+    background-color: #FFFFFF;
     width: 246px;
     height: 212px;
+    right: 27%;
+    top: 22%;
+    color: #000000;
+    z-index: 1;
+    box-shadow: 2px 4px 10px 0px #0000000D;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.copy-link {
+    margin-top: 20px;
+}
+
+.copy-link,
+.duplicate,
+.impress,
+.menu-delete {
+    display: flex;
+    gap: 20px;
+    margin-left: 20px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17.07px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.menu-delete p {
+    color: #D31408;
+}
+
+.Subtask-organize {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 </style>

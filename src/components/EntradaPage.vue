@@ -3,13 +3,15 @@
         <span id="title-page">Entrada</span>
     </div>
     <div class="Tasks-show">
-        <div class="task-card" v-for="task in Tasks" :key="task.id" @click="visualizeTask(task)">
-
-            <div>
+        <div :class="{
+            'task-card-subtask': task.subtasks && task.subtasks.length > 0,
+            'task-card': !task.subtasks.length > 0
+        }" v-for="task in Tasks" :key="task.id">
+            <div class="task-area">
                 <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
                     :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" @click.stop="''" />
                 <label :for="'custom-checkbox' + task.id" @click.stop="''"></label>
-                <span for="'custom-checkbox' + task.id">{{ task.title }}</span>
+                <span for="'custom-checkbox' + task.id"  @click="visualizeTask(task)">{{ task.title }}</span>
                 <p class="description-task">{{ task.description }}</p>
                 <div :class="{
                     'today': isToday(task.due_date),
@@ -18,10 +20,29 @@
                 }" @click.stop="''">
                     <img src="../assets/calendar-valid.svg" v-if="!isPastDue(task.due_date)">
                     <img src="../assets/calendar-expired.svg" v-if="isPastDue(task.due_date)">
-                    <p >{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
+                    <p>{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
+                </div>
+                <div class="line" v-if="task.subtasks && task.subtasks.length > 0">
+                </div>
+                <div class="subtask-area">
+                    <div v-if="task.subtasks && task.subtasks.length > 0">
+                            <div class="subtask-organize">
+                                <div class="showSubtask" v-for="Subtask in task.subtasks" :key="Subtask.id" @click.stop="''">
+                                    <input type="checkbox" :name="'checkbox' + Subtask.id"
+                                        :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
+                                        @change="updateTaskStatus"  />
+                                    <label :for="'custom-checkbox' + Subtask.id"></label>
+                                    <span  @click.stop >{{ Subtask.title_subtask }}</span>
+                                </div>
+                            </div>
+                    </div>
                 </div>
             </div>
-            <div class="hover-icons">
+            <div class="hover-icons"
+            :class="{
+            'hover-icons-subtask': task.subtasks && task.subtasks.length > 0,
+            'hover-icons': !task.subtasks.length > 0
+        }">
                 <div class="hovered-edit">
                     <span id="edit-tooltip">Editar tarefa</span>
                     <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)" @click.stop="''">
@@ -51,6 +72,7 @@ export default {
         }
     },
     methods: {
+
         getTasks() {
             console.log('getTask is working');
             axios.get('/task')
@@ -112,6 +134,7 @@ export default {
                     let deletedTask = this.Tasks.findIndex(item => item.id ===
                         task)
                     this.Tasks.splice(deletedTask, 1);
+                    this.$emit('update:showVisualize', false);
                 })
         },
         visualizeTask(task) {
@@ -155,8 +178,13 @@ export default {
     align-self: self-start;
     margin-top: 14%;
     height: 65vh;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: absolute;
+}
+
+.content {
+    display: flex;
 }
 
 .content-tasks {
@@ -174,7 +202,20 @@ export default {
 .hover-icons img {
     display: flex;
     cursor: pointer;
+}
+.hover-icons-subtask {
+    display: flex;
+    position: relative;
+    gap: 25px;
+    right: 60%;
+    bottom: 20%;
+    opacity: 1;
+    transition: 0.3s opacity ease;
+}
 
+.hover-icons-subtask img {
+    display: flex;
+    cursor: pointer;
 }
 
 .hovered-edit:hover #edit-tooltip,
@@ -217,7 +258,6 @@ export default {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0s linear 0.3s;
-
 }
 
 #delete-tooltip {
@@ -393,6 +433,69 @@ export default {
     font-size: 15px;
     font-weight: 500;
     top: 4px;
+}
 
+.subtask-organize {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.task-card-subtask {
+    border: 1px solid #E5E5E5;
+    padding: 15px 22px;
+    width: 678px;
+    height: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.line {
+    border: 1px solid #E5E5E5;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100vh;
+    margin-left: -50px;
+}
+.task-card-subtask:hover {
+    background-color: #FAFAFA;
+}
+
+.task-card-subtask:hover .hover-icons {
+    opacity: 1;
+}
+
+.task-card-subtask input[type="checkbox"] {
+    display: none;
+
+}
+
+.task-card-subtask span {
+    color: #000000;
+    font-weight: 500;
+}
+
+.task-card-subtask label:before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgb(0, 0, 0);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 30px;
+    margin-bottom: 3px;
+    transition: background-color 0.3s ease;
+}
+
+.task-card-subtask input[type="checkbox"]:checked+label:before {
+    background-color: rgb(0, 0, 0);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 10 10'%3E%3Cg class='nc-icon-wrapper' stroke-width='1' fill='%23555555'%3E%3Cpath fill='none' stroke='%23FFFFFF' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10' data-cap='butt' d='M2.83 4.72l1.58 1.58 2.83-2.83'/%3E%3C/g%3E%3C/svg%3E");
+    background-position: center;
+    border: none;
+    padding: 1px;
+    transition: background-color 0.3s ease;
 }
 </style>

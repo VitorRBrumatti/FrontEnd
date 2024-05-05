@@ -1,6 +1,7 @@
 <script>
 import Navbar from '@/components/Navbar.vue';
 import CriarTarefaModal from '@/components/CriarTarefaModal.vue';
+import CreateSubTask from '@/components/CreateSubTask.vue';
 import lateralBar from '@/components/lateralBar.vue';
 import EntradaPage from '@/components/EntradaPage.vue';
 import VisualizeTask from '@/components/VisualizeTask.vue';
@@ -10,6 +11,7 @@ export default {
     data() {
         return {
             showModal: false,
+            showSubTaskModal: false,
             showVisualize: false,
             selectedTask: {},
         }
@@ -26,6 +28,13 @@ export default {
         OpenVisualizeTask(task) {
             this.selectedTask = task,
             this.showVisualize = true;
+        },
+
+        OpenSubTaskModal() {
+            this.showSubTaskModal = true;
+        },
+        updateGet() {
+            this.$refs.EntradaPage.getTasks();
         }
     },
     components: {
@@ -34,6 +43,7 @@ export default {
         lateralBar,
         EntradaPage,
         VisualizeTask,
+        CreateSubTask
 
     },
     created () {
@@ -48,11 +58,11 @@ export default {
         <EntradaPage @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
-            <CriarTarefaModal v-model:showModal="showModal" :selectedTask="selectedTask"/>
+            <CriarTarefaModal v-model:showModal="showModal" :selectedTask="selectedTask" @get="updateGet"/>
         </div>
-        <VisualizeTask v-model:showVisualize="showVisualize" :selectedTask="selectedTask" @checkbox-changed="updateTaskStatus"></VisualizeTask>
+        <VisualizeTask v-model:showVisualize="showVisualize" :selectedTask="selectedTask" @show-Sub-Task="OpenSubTaskModal" ></VisualizeTask>
+        <CreateSubTask v-model:showSubTaskModal="showSubTaskModal" :selectedTask="selectedTask" @get="updateGet"></CreateSubTask>
      </div>
-
 </template>
 
 <style scoped>
