@@ -42,11 +42,11 @@
                     <p class="description">{{ selectedTask.description }}</p>
 
                     <div class="subtask">
-                        <div class="Title-section">
+                        <div class="title-section">
                             <span>Subtarefas</span>
                         </div>
-                        <div class="Subtask-organize">
-                            <div class="showSubtask" v-for="Subtask in selectedTask.subtasks"
+                        <div class="subtask-organize">
+                            <div class="show-subtask" v-for="Subtask in selectedTask.subtasks"
                                 :key="selectedTask.subtasks.id">
                                 <input type="checkbox" :name="'checkbox' + Subtask.id"
                                     :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
@@ -58,7 +58,7 @@
                         <button class="create-subtask" @click="openCreateSubTask()">Criar Subtarefas</button>
                     </div>
                 </div>
-                <div class="lateralInfos">
+                <div class="lateral-infos">
                     <div>
                         <p>Criado em</p>
                         <div class="created">
@@ -216,7 +216,7 @@ export default {
     font-weight: 500;
 }
 
-.bottom label:before {
+.bottom label::before {
     content: '';
     width: 18px;
     height: 18px;
@@ -229,7 +229,7 @@ export default {
     transition: background-color 0.3s ease;
 }
 
-.bottom input[type="checkbox"]:checked+label:before {
+.bottom input[type="checkbox"]:checked+label::before {
     background-color: rgb(0, 0, 0);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 10 10'%3E%3Cg class='nc-icon-wrapper' stroke-width='1' fill='%23555555'%3E%3Cpath fill='none' stroke='%23FFFFFF' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10' data-cap='butt' d='M2.83 4.72l1.58 1.58 2.83-2.83'/%3E%3C/g%3E%3C/svg%3E");
     background-position: center;
@@ -303,7 +303,7 @@ export default {
     cursor: pointer;
 }
 
-.Title-section {
+.title-section {
     margin-top: 30px;
     height: 40px;
     border-bottom: 1px solid #E5E5E5;
@@ -313,7 +313,7 @@ export default {
     text-align: left;
 
 }
-.Title-section span {
+.title-section span {
     font-size: 14px;
     font-weight: 600;
 }
@@ -378,7 +378,7 @@ export default {
     top: 4px;
 }
 
-.lateralInfos {
+.lateral-infos {
     position: relative;
     background-color: #F7F7F7;
     width: 246px;
@@ -467,7 +467,7 @@ export default {
     color: #D31408;
 }
 
-.Subtask-organize {
+.subtask-organize {
     display: flex;
     flex-direction: column;
     gap: 15px;

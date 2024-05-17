@@ -1,8 +1,8 @@
 <template>
     <div class="back" v-if="showSubTaskModal">
-        <div class="Subtarefa">
+        <div class="sub-tarefa">
             <div class="superior">
-                <input class="nameTask" type="text" v-model="nameSubTask" placeholder="Nome da Subtarefa">
+                <input class="name-sub-task" type="text" v-model="nameSubTask" placeholder="Nome da Subtarefa">
                 <input class="description" type="text" v-model="descriptionSubTask" placeholder="Descrição">
             </div>
             <div class="inferior">
@@ -59,7 +59,7 @@ export default {
     align-items: center;
 }
 
-.Subtarefa {
+.sub-tarefa {
     width: 678px;
     height: 216px;
     background: #FFFFFF;
@@ -89,7 +89,7 @@ export default {
     padding-right: 30px;
 }
 
-.nameTask {
+.name-sub-task {
     font-family: Montserrat;
     font-size: 16px;
     font-weight: 400;
@@ -103,7 +103,7 @@ export default {
     line-height: 17.07px;
 }
 
-.nameTask,
+.name-sub-task,
 .description {
     border: none;
     outline: none;

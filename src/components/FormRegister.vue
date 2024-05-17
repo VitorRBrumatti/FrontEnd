@@ -27,7 +27,7 @@ import router from '@/router'
             <label class="label" for="password">Senha de Acesso</label>
             <input class="input" type="password" placeholder=" *******" id="password">
         </form>
-        <div class="funcoes">
+        <div class="functions">
             <a href="/">Já tenho conta</a>
             <button @click="acessLogin()">Cadastrar</button>
         </div>
@@ -102,7 +102,7 @@ a {
     line-height: 28.8px;
     color: #81858E;
 }
-.funcoes {
+.functions {
     display: flex;
     margin-top: 35px;
     gap: 224px;

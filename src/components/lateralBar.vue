@@ -2,7 +2,7 @@
 
 </script>
 <template>
-    <div class="lateralOptions">
+    <div class="lateral-options">
         <div class="icons">
             <div class="icon-organize">
                 <img class="img-entrada" src="../assets/entrada-icon.svg" alt="Entrada icon">
@@ -21,7 +21,7 @@
 </template>
 
 <style scoped>
-.lateralOptions {
+.lateral-options {
     position: absolute;
     width: 293px;
     height: calc(100vh - 80px);

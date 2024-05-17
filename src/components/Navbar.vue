@@ -18,9 +18,9 @@ export default {
     <nav>
         <img src="../assets/rockLoose.png" alt="RockLoose" class="nav-rock">
         <div class="nav-menu">
-            <div class="taskHover" @click="modalOpen()" @mouseover="showing = true" @mouseout="showing = false">
-                <img src="../assets/criarTarefa.svg" alt="New task" class="newPlus">
-                <p v-show="showing == true" class="taskHover">Criar tarefa</p>
+            <div class="task-hover" @click="modalOpen()" @mouseover="showing = true" @mouseout="showing = false">
+                <img src="../assets/criarTarefa.svg" alt="New task" class="new-plus">
+                <p v-show="showing == true" class="task-hover">Criar tarefa</p>
             </div>
             <img src="../assets/ajuda.svg" alt="Help vetor" class="help">
             <img src="../assets/Notification.svg" alt="Notification vetor" class="notification">
@@ -66,13 +66,13 @@ nav {
     height: 28px;
 }
 
-.newPlus {
+.new-plus {
     width: 20px;
     height: 20px;
     border: 2px 0px 0px 0px;
 }
 
-.taskHover {
+.task-hover {
     margin-top: 6px;
     display: flex;
     gap: 11px;

@@ -1,15 +1,15 @@
 <template>
     <div class="backdrop" v-if="showModal">
-        <div class="nova-tarefa">
+        <div class="new-task">
             <div class="superior">
-                <input class="nameTask" type="text" v-model="nameTask" placeholder="Nome da tarefa">
+                <input class="name-task" type="text" v-model="nameTask" placeholder="Nome da tarefa">
                 <input class="description" type="text" v-model="descriptionTask" placeholder="Descrição">
                 <input class="date" v-model="taskExpire" type="date">
             </div>
-            <div class="inferior">
+            <div class="bottom">
                 <div class="buttons">
                     <button class="cancelar" @click="closeModal()">Cancelar</button>
-                    <button class="criar" @click="createTask()">{{ selectedTask.id ? 'Editar' : 'Criar' }}
+                    <button class="create" @click="createTask()">{{ selectedTask.id ? 'Editar' : 'Criar' }}
                         Tarefa</button>
                 </div>
             </div>
@@ -92,7 +92,7 @@ export default {
     align-items: center;
 }
 
-.nova-tarefa {
+.new-task {
     width: 678px;
     height: 216px;
     background: #FFFFFF;
@@ -111,7 +111,7 @@ export default {
     border: 1px solid #E5E5E5
 }
 
-.inferior {
+.bottom {
     border: 1px solid #E5E5E5;
     border-top: none;
     width: 678px;
@@ -123,7 +123,7 @@ export default {
     padding-right: 30px;
 }
 
-.nameTask {
+.name-task {
     font-family: Montserrat;
     font-size: 16px;
     font-weight: 400;
@@ -137,7 +137,7 @@ export default {
     line-height: 17.07px;
 }
 
-.nameTask,
+.name-task,
 .description {
     border: none;
     outline: none;
@@ -182,7 +182,7 @@ input.date::-webkit-calendar-picker-indicator {
     gap: 20px;
 }
 
-.criar {
+.create {
     cursor: pointer;
     width: 122px;
     height: 40px;

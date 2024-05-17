@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-    <div class="fundo">
+    <div class="back">
         <lateralBar></lateralBar>
         <EntradaPage @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
         <div>
@@ -66,7 +66,7 @@ export default {
 </template>
 
 <style scoped>
-.fundo {
+.back {
     position: fixed;
     top: 0;
     left: 0;
