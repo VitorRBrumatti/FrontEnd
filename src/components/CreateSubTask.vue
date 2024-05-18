@@ -42,6 +42,17 @@ export default {
             required: false,
         },
     },
+    watch: {
+        showSubTaskModal(newValue, oldValue) {
+            if (newValue === true && this.selectedTask.id) {
+                this.nameSubTask = this.selectedTask.subtasks.title_subtask;
+                this.descriptionSubTask = this.selectedTask.subtasks.description_subtask;
+            } else if (newValue === true) {
+                this.nameSubTask = '';
+                this.descriptionSubTask = '';
+            }
+        }
+    },
 }
 </script>
 

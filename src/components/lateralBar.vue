@@ -4,15 +4,15 @@
 <template>
     <div class="lateral-options">
         <div class="icons">
-            <div class="icon-organize">
+            <div class="icon-organize" @click="$emit('show-all-tasks')">
                 <img class="img-entrada" src="../assets/entrada-icon.svg" alt="Entrada icon">
                 <p>Entrada</p>
             </div>
-            <div class="icon-organize">
+            <div class="icon-organize" @click="$emit('show-today-tasks')">
                 <img class="calendar-hoje" src="../assets/calendar-lateral.svg" alt="calendar">
                 <p>Tarefas de hoje</p>
             </div>
-            <div class="icon-organize">
+            <div class="icon-organize" @click="$emit('show-overdue-tasks')">
                 <img class="warning" src="../assets/warning-icon.svg" alt="Warning Icon">
                 <p>Vencidos</p>
             </div>
@@ -49,6 +49,7 @@
     line-height: 18.29px;
     text-align: left;
     color: #000000;
+    cursor: pointer;
 }
 p {
     padding-left: 20px;

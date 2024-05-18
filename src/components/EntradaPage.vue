@@ -6,12 +6,12 @@
         <div :class="{
             'task-card-subtask': task.subtasks && task.subtasks.length > 0,
             'task-card': !task.subtasks.length > 0
-        }" v-for="task in Tasks" :key="task.id">
+        }" v-for="task in filteredTasks" :key="task.id">
             <div class="task-area">
                 <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
                     :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" @click.stop="''" />
                 <label :for="'custom-checkbox' + task.id" @click.stop="''"></label>
-                <span for="'custom-checkbox' + task.id"  @click="visualizeTask(task)">{{ task.title }}</span>
+                <span for="'custom-checkbox' + task.id" @click="visualizeTask(task)">{{ task.title }}</span>
                 <p class="description-task">{{ task.description }}</p>
                 <div :class="{
                     'today': isToday(task.due_date),
@@ -26,23 +26,23 @@
                 </div>
                 <div class="subtask-area">
                     <div v-if="task.subtasks && task.subtasks.length > 0">
-                            <div class="subtask-organize">
-                                <div class="show-subtask" v-for="Subtask in task.subtasks" :key="Subtask.id" @click.stop="''">
-                                    <input type="checkbox" :name="'checkbox' + Subtask.id"
-                                        :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
-                                        @change="updateTaskStatus"  />
-                                    <label :for="'custom-checkbox' + Subtask.id"></label>
-                                    <span  @click.stop >{{ Subtask.title_subtask }}</span>
-                                </div>
+                        <div class="subtask-organize">
+                            <div class="show-subtask" v-for="Subtask in task.subtasks" :key="Subtask.id"
+                                @click.stop="''">
+                                <input type="checkbox" :name="'checkbox' + Subtask.id"
+                                    :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
+                                    @change="updateTaskStatus" />
+                                <label :for="'custom-checkbox' + Subtask.id"></label>
+                                <span @click.stop>{{ Subtask.title_subtask }}</span>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="hover-icons"
-            :class="{
-            'hover-icons-subtask': task.subtasks && task.subtasks.length > 0,
-            'hover-icons': !task.subtasks.length > 0
-        }">
+            <div class="hover-icons" :class="{
+                'hover-icons-subtask': task.subtasks && task.subtasks.length > 0,
+                'hover-icons': !task.subtasks.length > 0
+            }">
                 <div class="hovered-edit">
                     <span id="edit-tooltip">Editar tarefa</span>
                     <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)" @click.stop="''">
@@ -68,6 +68,7 @@ export default {
         return {
             selectedTasks: {},
             Tasks: [],
+            filteredTasks: [],
             taskIsChecked: [],
         }
     },
@@ -80,8 +81,8 @@ export default {
                     console.log(response);
                     this.Tasks = response.data.data;
                     this.taskIsChecked = this.Tasks.map(task => ({ id: task.id, status: task.status }));
-                    console.log(this.Tasks);
-                    console.log(this.Tasks.due_date);
+                    this.filteredTasks = this.Tasks;
+                    console.log(Tas);
                 });
         },
         IsTaskChecked(task) {
@@ -139,6 +140,15 @@ export default {
         },
         visualizeTask(task) {
             this.$emit('open-visualize-task', task);
+        },
+        filterTasks(filterType) {
+            if (filterType === 'all') {
+                this.filteredTasks = this.Tasks;
+            } else if (filterType === 'today') {
+                this.filteredTasks = this.Tasks.filter(task => this.isToday(task.due_date));
+            } else if (filterType === 'overdue') {
+                this.filteredTasks = this.Tasks.filter(task => this.isPastDue(task.due_date));
+            }
         },
     },
     created() {
@@ -203,6 +213,7 @@ export default {
     display: flex;
     cursor: pointer;
 }
+
 .hover-icons-subtask {
     display: flex;
     position: relative;
@@ -451,6 +462,7 @@ export default {
     align-items: center;
     cursor: pointer;
 }
+
 .line {
     border: 1px solid #E5E5E5;
     position: relative;
@@ -459,6 +471,7 @@ export default {
     width: 100vh;
     margin-left: -50px;
 }
+
 .task-card-subtask:hover {
     background-color: #FAFAFA;
 }

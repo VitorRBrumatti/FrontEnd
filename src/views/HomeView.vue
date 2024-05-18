@@ -29,12 +29,20 @@ export default {
             this.selectedTask = task,
             this.showVisualize = true;
         },
-
         OpenSubTaskModal() {
             this.showSubTaskModal = true;
         },
         updateGet() {
             this.$refs.EntradaPage.getTasks();
+        },
+        filterAllTasks() {
+            this.$refs.EntradaPage.filterTasks('all');
+        },
+        filterTodayTasks() {
+            this.$refs.EntradaPage.filterTasks('today');
+        },
+        filterOverdueTasks() {
+            this.$refs.EntradaPage.filterTasks('overdue');
         }
     },
     components: {
@@ -54,8 +62,12 @@ export default {
 
 <template>
     <div class="back">
-        <lateralBar></lateralBar>
-        <EntradaPage @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
+        <lateralBar
+        @show-all-tasks="filterAllTasks" 
+        @show-today-tasks="filterTodayTasks" 
+        @show-overdue-tasks="filterOverdueTasks">
+        ></lateralBar>
+        <EntradaPage ref="EntradaPage" @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
             <CriarTarefaModal v-model:showModal="showModal" :selectedTask="selectedTask" @get="updateGet"/>
