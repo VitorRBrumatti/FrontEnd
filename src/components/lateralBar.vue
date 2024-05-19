@@ -1,18 +1,24 @@
 <script>
-
+export default {
+  methods: {
+    filterTasks(filter) {
+      this.$emit('filter-tasks', filter);
+    },
+  },
+};
 </script>
 <template>
     <div class="lateral-options">
         <div class="icons">
-            <div class="icon-organize" @click="$emit('show-all-tasks')">
+            <div class="icon-organize" @click="filterTasks(null)">
                 <img class="img-entrada" src="../assets/entrada-icon.svg" alt="Entrada icon">
                 <p>Entrada</p>
             </div>
-            <div class="icon-organize" @click="$emit('show-today-tasks')">
+            <div class="icon-organize" @click="filterTasks('today')">
                 <img class="calendar-hoje" src="../assets/calendar-lateral.svg" alt="calendar">
                 <p>Tarefas de hoje</p>
             </div>
-            <div class="icon-organize" @click="$emit('show-overdue-tasks')">
+            <div class="icon-organize" @click="filterTasks('overdue')">
                 <img class="warning" src="../assets/warning-icon.svg" alt="Warning Icon">
                 <p>Vencidos</p>
             </div>

@@ -63,26 +63,40 @@
 
 <script>
 import axios from 'axios';
+
 export default {
+    props: {
+        filter: String,
+    },
     data() {
         return {
             selectedTasks: {},
             Tasks: [],
             filteredTasks: [],
             taskIsChecked: [],
+        };
+    },
+    watch: {
+        filter: {
+            immediate: true,
+            handler(newFilter) {
+                this.getTasks(newFilter);
+            }
         }
     },
     methods: {
-
-        getTasks() {
+        getTasks(filter = null) {
             console.log('getTask is working');
-            axios.get('/task')
+            axios.get('/task', { params: { filter } })
                 .then((response) => {
                     console.log(response);
                     this.Tasks = response.data.data;
                     this.taskIsChecked = this.Tasks.map(task => ({ id: task.id, status: task.status }));
                     this.filteredTasks = this.Tasks;
-                    console.log(Tas);
+                    console.log(this.Tasks);
+                })
+                .catch(error => {
+                    alert('Failed to fetch tasks:', error);
                 });
         },
         IsTaskChecked(task) {
@@ -132,29 +146,23 @@ export default {
         deleteTask(task) {
             axios.delete(`/task/${task}`)
                 .then(() => {
-                    let deletedTask = this.Tasks.findIndex(item => item.id ===
-                        task)
+                    let deletedTask = this.Tasks.findIndex(item => item.id === task);
                     this.Tasks.splice(deletedTask, 1);
                     this.$emit('update:showVisualize', false);
                 })
+                .catch(error => {
+                    console.error(`Error deleting task: ${error}`);
+                });
         },
         visualizeTask(task) {
             this.$emit('open-visualize-task', task);
-        },
-        filterTasks(filterType) {
-            if (filterType === 'all') {
-                this.filteredTasks = this.Tasks;
-            } else if (filterType === 'today') {
-                this.filteredTasks = this.Tasks.filter(task => this.isToday(task.due_date));
-            } else if (filterType === 'overdue') {
-                this.filteredTasks = this.Tasks.filter(task => this.isPastDue(task.due_date));
-            }
         },
     },
     created() {
         this.getTasks();
     },
-}
+};
+
 </script>
 
 <style scoped>

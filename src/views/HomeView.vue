@@ -14,6 +14,7 @@ export default {
             showSubTaskModal: false,
             showVisualize: false,
             selectedTask: {},
+            currentFilter: null,
         }
     },
     methods: {
@@ -35,15 +36,9 @@ export default {
         updateGet() {
             this.$refs.EntradaPage.getTasks();
         },
-        filterAllTasks() {
-            this.$refs.EntradaPage.filterTasks('all');
+        applyFilter(filter) {
+            this.currentFilter = filter;
         },
-        filterTodayTasks() {
-            this.$refs.EntradaPage.filterTasks('today');
-        },
-        filterOverdueTasks() {
-            this.$refs.EntradaPage.filterTasks('overdue');
-        }
     },
     components: {
         Navbar,
@@ -62,18 +57,14 @@ export default {
 
 <template>
     <div class="back">
-        <lateralBar
-        @show-all-tasks="filterAllTasks" 
-        @show-today-tasks="filterTodayTasks" 
-        @show-overdue-tasks="filterOverdueTasks">
-        ></lateralBar>
-        <EntradaPage ref="EntradaPage" @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
+        <lateralBar @filter-tasks="applyFilter"></lateralBar>
+        <EntradaPage :filter="currentFilter" @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
-            <CriarTarefaModal v-model:showModal="showModal" :selectedTask="selectedTask" @get="updateGet"/>
+            <CriarTarefaModal @update-get="updateGet" v-model:showModal="showModal" :selectedTask="selectedTask" @get="updateGet"/>
         </div>
         <VisualizeTask v-model:showVisualize="showVisualize" :selectedTask="selectedTask" @show-Sub-Task="OpenSubTaskModal" ></VisualizeTask>
-        <CreateSubTask v-model:showSubTaskModal="showSubTaskModal" :selectedTask="selectedTask" @get="updateGet"></CreateSubTask>
+        <CreateSubTask @update-get="updateGet" v-model:showSubTaskModal="showSubTaskModal" :selectedTask="selectedTask" @get="updateGet"></CreateSubTask>
      </div>
 </template>
 

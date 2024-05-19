@@ -30,6 +30,7 @@ export default {
             }
             axios.post('/Subtask', data)
                 .then(() => this.$emit('update:showSubTaskModal', false));
+                this.$emit('update-get');
         }
     },
     props: {
