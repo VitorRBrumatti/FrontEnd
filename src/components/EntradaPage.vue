@@ -31,6 +31,7 @@
                                 @click.stop="''">
                                 <input type="checkbox" :name="'checkbox' + Subtask.id"
                                     :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
+                                    :checked="Subtask.status_subtask === 'completed'" v-on:change="updateSubtaskStatus(Subtask)"
                                     @change="updateTaskStatus" />
                                 <label :for="'custom-checkbox' + Subtask.id"></label>
                                 <span @click.stop>{{ Subtask.title_subtask }}</span>
@@ -92,6 +93,11 @@ export default {
                     console.log(response);
                     this.Tasks = response.data.data;
                     this.taskIsChecked = this.Tasks.map(task => ({ id: task.id, status: task.status }));
+                    this.Tasks.forEach(task => {
+                        task.subtasks.forEach(subtask => {
+                            this.taskIsChecked.push({ id: subtask.id, status: subtask.status_subtask })
+                        });
+                    });
                     this.filteredTasks = this.Tasks;
                     console.log(this.Tasks);
                 })
@@ -100,7 +106,7 @@ export default {
                 });
         },
         IsTaskChecked(task) {
-            return this.taskIsChecked.some(item => item.id === task.id && item.status === 'completed');
+            return task.subtasks && task.subtasks.some(subtask => subtask.status_subtask === 'completed');
         },
         updateTaskStatus(task) {
             let newStatus = task.status === 'completed' ? 'pending' : 'completed';
@@ -121,6 +127,28 @@ export default {
                 })
                 .catch(error => {
                     console.error(`Error updating task: ${error}`);
+                });
+        },
+        updateSubtaskStatus() {
+            let SubStatus = subtask.status_subtask === 'completed' ? 'pending' : 'completed';
+
+            axios.put(`/Subtask/${subtask.id}`, { status_subtask: SubStatus })
+                .then(response => {
+
+                    alert('Subtask updated successfully!');
+
+                    let subtaskToUpdate = this.taskIsChecked.find(item => item.id === subtask.id);
+
+                    if (subtaskToUpdate) {
+                        subtaskToUpdate.status = SubStatus;
+                    } else {
+                        this.taskIsChecked.push({ id: subtask.id, status: SubStatus });
+                    }
+
+                    subtask.status_subtask = SubStatus;
+                })
+                .catch(error => {
+                    console.error(`Error updating subtask: ${error}`);
                 });
         },
         openEditModal(task) {

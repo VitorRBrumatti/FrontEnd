@@ -1,10 +1,5 @@
 <script>
 export default {
-    data() {
-        return {
-            showing: false
-        }
-    },
     methods: {
         modalOpen() {
             this.$emit('modalEmit')
@@ -18,9 +13,9 @@ export default {
     <nav>
         <img src="../assets/rockLoose.png" alt="RockLoose" class="nav-rock">
         <div class="nav-menu">
-            <div class="task-hover" @click="modalOpen()" @mouseover="showing = true" @mouseout="showing = false">
+            <div class="task-hover" @click="modalOpen()">
                 <img src="../assets/criarTarefa.svg" alt="New task" class="new-plus">
-                <p v-show="showing == true" class="task-hover">Criar tarefa</p>
+                <p class="task-hover">Criar tarefa</p>
             </div>
             <img src="../assets/ajuda.svg" alt="Help vetor" class="help">
             <img src="../assets/Notification.svg" alt="Notification vetor" class="notification">
@@ -73,13 +68,21 @@ nav {
 }
 
 .task-hover {
-    margin-top: 6px;
     display: flex;
     gap: 11px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
 }
+.task-hover p {
+    margin-top: 2px;
+    position: relative;
+    display: none;
+}
+.task-hover:hover p {
+    display: block;
+}
+
 
 p {
     font-family: Montserrat;

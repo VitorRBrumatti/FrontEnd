@@ -55,8 +55,27 @@ export default {
             }
             else {
                 axios.post('/task', data)
-                    .then(() => this.$emit('update:showModal', false));
+                .then(() => this.$emit('update:showModal', false))
+                .catch(error => {
+        if (error.response) {
+            // Se houver uma resposta do servidor com status de erro
+            const responseData = error.response.data;
+            if (responseData.message) {
+                // Exibir a mensagem de erro retornada pelo backend
+                alert(responseData.message);
+            } else {
+                // Se não houver uma mensagem de erro específica, exibir uma mensagem genérica
+                alert('Ocorreu um erro. Por favor, tente novamente mais tarde.');
+            }
+        } else {
+            // Se não houver resposta do servidor
+            alert('Erro de rede. Por favor, verifique sua conexão e tente novamente.');
+            console.error('Erro:', error);
+        }
+    });
+                    
                 this.$emit('update-get');
+                
             }
 
         }
