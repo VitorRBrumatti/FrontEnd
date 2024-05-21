@@ -2,9 +2,22 @@
     <div class="backdrop" v-if="showModal">
         <div class="new-task">
             <div class="superior">
-                <input class="name-task" type="text" v-model="nameTask" placeholder="Nome da tarefa">
-                <input class="description" type="text" v-model="descriptionTask" placeholder="Descrição">
-                <input class="date" v-model="taskExpire" type="date">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <input class="name-task" type="text" v-model="nameTask" placeholder="Nome da Tarefa">
+                    <span v-if="errors.title" style="color: #ff0000; font-size: 14px;">{{ errors.title[0] }}</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <input class="description" type="text" v-model="descriptionTask" placeholder="Descrição">
+                    <span v-if="errors.description" style="color: #ff0000; font-size: 14px;">{{ errors.description[0]
+                        }}</span>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between;">
+                    <input class="date" v-model="taskExpire" type="date">
+                    <span v-if="errors.due_date" style="color: #ff0000; font-size: 14px;">{{ errors.due_date[0]
+                        }}</span>
+                </div>
+
             </div>
             <div class="bottom">
                 <div class="buttons">
@@ -25,6 +38,7 @@ export default {
             nameTask: '',
             descriptionTask: '',
             taskExpire: '',
+            errors: [],
         }
     },
     props: {
@@ -50,32 +64,20 @@ export default {
             }
             if (this.selectedTask.id) {
                 axios.put(`/task/${this.selectedTask.id}`, data)
-                    .then(() => this.$emit('update:showModal', false));
-                this.$emit('update-get');
+                    .then(() => this.$emit('update:showModal', false),
+                    this.$emit('update-get'))
+                    .catch(e => {
+                        this.errors = e.response.data
+                    });
             }
             else {
                 axios.post('/task', data)
-                .then(() => this.$emit('update:showModal', false))
-                .catch(error => {
-        if (error.response) {
-            // Se houver uma resposta do servidor com status de erro
-            const responseData = error.response.data;
-            if (responseData.message) {
-                // Exibir a mensagem de erro retornada pelo backend
-                alert(responseData.message);
-            } else {
-                // Se não houver uma mensagem de erro específica, exibir uma mensagem genérica
-                alert('Ocorreu um erro. Por favor, tente novamente mais tarde.');
-            }
-        } else {
-            // Se não houver resposta do servidor
-            alert('Erro de rede. Por favor, verifique sua conexão e tente novamente.');
-            console.error('Erro:', error);
-        }
-    });
-                    
-                this.$emit('update-get');
-                
+                    .then(() => this.$emit('update:showModal', false),
+                        this.$emit('update-get'))
+                    .catch(e => {
+                        this.errors = e.response.data
+                    });
+
             }
 
         }
@@ -128,7 +130,7 @@ export default {
     padding: 20px;
     width: 678px;
     height: 148px;
-    gap: 20px;
+    gap: 15px;
     border: 1px solid #E5E5E5
 }
 
@@ -162,8 +164,8 @@ export default {
 .description {
     border: none;
     outline: none;
-    width: 447px;
-    height: 17px;
+    width: 325px;
+    height: 15px;
 
 }
 

@@ -255,8 +255,8 @@ export default {
     position: relative;
     gap: 25px;
     right: 60%;
-    bottom: 20%;
-    opacity: 1;
+    bottom: 25%;
+    opacity: 0;
     transition: 0.3s opacity ease;
 }
 
