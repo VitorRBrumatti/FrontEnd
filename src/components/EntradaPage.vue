@@ -8,56 +8,63 @@
             'task-card': !task.subtasks.length > 0
         }" v-for="task in filteredTasks" :key="task.id">
             <div class="task-area">
-                <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
-                    :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" @click.stop="''" />
-                <label :for="'custom-checkbox' + task.id" @click.stop="''"></label>
-                <span for="'custom-checkbox' + task.id" @click="visualizeTask(task)">{{ task.title }}</span>
-                <p class="description-task">{{ task.description }}</p>
-                <div :class="{
-                    'today': isToday(task.due_date),
-                    'future': !isToday(task.due_date) && !isPastDue(task.due_date),
-                    'past-due': isPastDue(task.due_date)
-                }" @click.stop="''">
-                    <img src="../assets/calendar-valid.svg" v-if="!isPastDue(task.due_date)">
-                    <img src="../assets/calendar-expired.svg" v-if="isPastDue(task.due_date)">
-                    <p>{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
+                <div class="only-task">
+                    <div>
+                        <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
+                            :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" @click.stop="''" />
+                        <label :for="'custom-checkbox' + task.id" @click.stop="''"></label>
+                        <span class="title-task" for="'custom-checkbox' + task.id" @click="visualizeTask(task)">{{ task.title }}</span>
+                        <p class="description-task" >{{ task.description }}</p>
+                        <div :class="{
+                            'today': isToday(task.due_date),
+                            'future': !isToday(task.due_date) && !isPastDue(task.due_date),
+                            'past-due': isPastDue(task.due_date)
+                        }" @click.stop="''">
+                            <img src="../assets/calendar-valid.svg" v-if="!isPastDue(task.due_date)">
+                            <img src="../assets/calendar-expired.svg" v-if="isPastDue(task.due_date)">
+                            <p>{{ isToday(task.due_date) ? "Hoje" : formatDueDate(task.due_date) }}</p>
+                        </div>
+                    </div>
+                        <div :class="{
+                            'hover-icons-subtask': task.subtasks && task.subtasks.length > 0,
+                            'hover-icons': !task.subtasks.length > 0
+                        }">
+                            <div class="hovered-edit">
+                                <span id="edit-tooltip">Editar tarefa</span>
+                                <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)"
+                                    @click.stop="''">
+                            </div>
+                            <div class="hovered-due-date">
+                                <span id="date-tooltip">Definir vencimento</span>
+                                <img src="../assets/set-due-date.svg" alt="set-due-date" @click.stop="''">
+                            </div>
+                            <div class="hovered-delete">
+                                <img src="../assets/delete-icon.svg" alt="delete-icon"
+                                    @click="selectedTasks = task.id, deleteTask(task.id)" @click.stop="''">
+                                <span id="delete-tooltip">Excluir tarefa</span>
+                            </div>
+                        </div>
                 </div>
-                <div class="line" v-if="task.subtasks && task.subtasks.length > 0">
-                </div>
+
+                <div class="line" v-if="task.subtasks && task.subtasks.length > 0"></div>
                 <div class="subtask-area">
-                    <div v-if="task.subtasks && task.subtasks.length > 0">
+                    <div class="sub" v-if="task.subtasks && task.subtasks.length > 0">
                         <div class="subtask-organize">
                             <div class="show-subtask" v-for="Subtask in task.subtasks" :key="Subtask.id"
                                 @click.stop="''">
                                 <input type="checkbox" :name="'checkbox' + Subtask.id"
-                                    :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
-                                    :checked="Subtask.status_subtask === 'completed'" v-on:change="updateSubtaskStatus(Subtask)"
-                                    @change="updateTaskStatus" />
+                                    :id="'custom-checkbox' + Subtask.id"
+                                    :checked="Subtask.status_subtask === 'completed'"
+                                    v-on:change="updateSubtaskStatus(Subtask)" 
+                                    :disabled="IsTaskChecked(task)" />
                                 <label :for="'custom-checkbox' + Subtask.id"></label>
-                                <span @click.stop>{{ Subtask.title_subtask }}</span>
+                                <span class="subtask-title">{{ Subtask.title_subtask }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="hover-icons" :class="{
-                'hover-icons-subtask': task.subtasks && task.subtasks.length > 0,
-                'hover-icons': !task.subtasks.length > 0
-            }">
-                <div class="hovered-edit">
-                    <span id="edit-tooltip">Editar tarefa</span>
-                    <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openEditModal(task)" @click.stop="''">
-                </div>
-                <div class="hovered-due-date">
-                    <span id="date-tooltip">Definir vencimento</span>
-                    <img src="../assets/set-due-date.svg" alt="set-due-date" @click.stop="''">
-                </div>
-                <div class="hovered-delete">
-                    <img src="../assets/delete-icon.svg" alt="delete-icon"
-                        @click="selectedTasks = task.id, deleteTask(task.id)" @click.stop="''">
-                    <span id="delete-tooltip">Excluir tarefa</span>
-                </div>
-            </div>
+
         </div>
     </div>
 </template>
@@ -124,31 +131,32 @@ export default {
                     }
 
                     task.status = newStatus;
+                    this.getTasks();
                 })
                 .catch(error => {
                     console.error(`Error updating task: ${error}`);
                 });
         },
-        updateSubtaskStatus() {
-            let SubStatus = subtask.status_subtask === 'completed' ? 'pending' : 'completed';
+        updateSubtaskStatus(Subtask) {
+            let SubStatus = Subtask.status_subtask === 'completed' ? 'pending' : 'completed';
 
-            axios.put(`/Subtask/${subtask.id}`, { status_subtask: SubStatus })
+            axios.put(`/subtask/${Subtask.id}`, { status_subtask: SubStatus })
                 .then(response => {
 
-                    alert('Subtask updated successfully!');
-
-                    let subtaskToUpdate = this.taskIsChecked.find(item => item.id === subtask.id);
-
+                    let subtaskToUpdate = this.taskIsChecked.find(item => item.id === Subtask.id);
+                    
                     if (subtaskToUpdate) {
                         subtaskToUpdate.status = SubStatus;
                     } else {
-                        this.taskIsChecked.push({ id: subtask.id, status: SubStatus });
+                        this.taskIsChecked.push({ id: Subtask.id, status: SubStatus });
                     }
-
-                    subtask.status_subtask = SubStatus;
+                    
+                    Subtask.status_subtask = SubStatus;
+                    alert('Subtask updated successfully!');
+                    this.getTasks();
                 })
                 .catch(error => {
-                    console.error(`Error updating subtask: ${error}`);
+                    console.error(error);
                 });
         },
         openEditModal(task) {
@@ -189,6 +197,11 @@ export default {
     created() {
         this.getTasks();
     },
+    computed: {
+        name() {
+            return this.data 
+        }
+    },
 };
 
 </script>
@@ -197,7 +210,11 @@ export default {
 * {
     font-family: Montserrat;
 }
-
+.only-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .title-container {
     position: absolute;
     width: 701px;
@@ -239,9 +256,11 @@ export default {
 
 .hover-icons {
     display: flex;
-    position: relative;
     gap: 25px;
+    width: 100px;
     opacity: 0;
+    position: relative;
+    margin-right: 25px;
     transition: 0.3s opacity ease;
 }
 
@@ -254,8 +273,8 @@ export default {
     display: flex;
     position: relative;
     gap: 25px;
-    right: 60%;
-    bottom: 25%;
+    right: 31%;
+    height: 20px;
     opacity: 0;
     transition: 0.3s opacity ease;
 }
@@ -328,10 +347,10 @@ export default {
     border: 1px solid #E5E5E5;
     padding: 15px 22px;
     width: 678px;
-    height: 109px;
+    height: auto;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
     cursor: pointer;
 }
 
@@ -340,6 +359,10 @@ export default {
 }
 
 .task-card:hover .hover-icons {
+    opacity: 1;
+}
+
+.task-card-subtask:hover .hover-icons-subtask {
     opacity: 1;
 }
 
@@ -378,8 +401,18 @@ export default {
 .description-task {
     color: #81858E;
     margin-left: 48px;
+    width: 15px;
+    width: 350px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: clip;
 }
-
+.title-task {
+    width: 350px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: clip;
+}
 
 .today {
     background: #0094881A;
@@ -482,20 +515,40 @@ export default {
     top: 4px;
 }
 
+.show-subtask {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.show-subtask span.subtask-title {
+    display: inline-block;
+    white-space: nowrap;
+    width: 350px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: clip;
+}
+
 .subtask-organize {
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
+.subtask-area {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
 .task-card-subtask {
     border: 1px solid #E5E5E5;
     padding: 15px 22px;
     width: 678px;
-    height: 200px;
+    height: auto;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     cursor: pointer;
 }
 
