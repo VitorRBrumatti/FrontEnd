@@ -21,12 +21,12 @@
                     </div>
                 </div>
                 <div class="date" :class="{
-                    'on-time': !isPastDue(selectedTask.due_date),
-                    'expired': isPastDue(selectedTask.due_date)
+                    'on-time': !isPastDue,
+                    'expired': isPastDue
                 }">
-                    <img src="../assets/calendar-valid.svg" v-if="!isPastDue(selectedTask.due_date)">
-                    <img src="../assets/calendar-expired.svg" v-if="isPastDue(selectedTask.due_date)">
-                    <p>{{ !isPastDue(selectedTask.due_date) ? "No prazo" : "Expirado" }}</p>
+                    <img src="../assets/calendar-valid.svg" v-if="!isPastDue">
+                    <img src="../assets/calendar-expired.svg" v-if="isPastDue">
+                    <p>{{ !isPastDue ? "No prazo" : "Expirado" }}</p>
                 </div>
                 <div class="icons">
                     <img class="tree-points" src="../assets/tree-points.svg" alt="tree-points" @click="openMenu">
@@ -46,13 +46,33 @@
                             <span>Subtarefas</span>
                         </div>
                         <div class="subtask-organize">
-                            <div class="show-subtask" v-for="Subtask in selectedTask.subtasks"
+
+                            <div class="show-subtask" v-for="subtask in selectedTask.subtasks"
                                 :key="selectedTask.subtasks.id">
-                                <input type="checkbox" :name="'checkbox' + Subtask.id"
-                                    :id="'custom-checkbox' + selectedTask.id + '_' + Subtask.id" v-model="IsTaskChecked"
-                                    @change="updateTaskStatus" />
-                                <label :for="'custom-checkbox' + selectedTask.id + '_' + Subtask.id"></label>
-                                <span class="subtask-title">{{ Subtask.title_subtask }}</span>
+                                <div>
+                                    <input type="checkbox" :name="'checkbox' + subtask.id"
+                                        :id="'custom-checkbox' + selectedTask.id + '_' + subtask.id"
+                                        v-model="IsTaskChecked" @change="updateTaskStatus" />
+                                    <label :for="'custom-checkbox' + selectedTask.id + '_' + subtask.id"></label>
+                                    <span class="subtask-title">{{ subtask.title_subtask }}</span>
+                                </div>
+
+                                <div class="hover-icons">
+                                    <div class="hovered-edit">
+                                        <span id="edit-tooltip">Editar tarefa</span>
+                                        <img src="../assets/edit-icon.svg" alt="edit-icon" @click="openCreateSubTask(subtask)"
+                                            @click.stop="''">
+                                    </div>
+                                    <div class="hovered-due-date">
+                                        <span id="date-tooltip">Definir vencimento</span>
+                                        <img src="../assets/set-due-date.svg" alt="set-due-date" @click.stop="''">
+                                    </div>
+                                    <div class="hovered-delete">
+                                        <img src="../assets/delete-icon.svg" alt="delete-icon"
+                                            @click="deleteSubTask(subtask)" @click.stop="''">
+                                        <span id="delete-tooltip">Excluir tarefa</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <button class="create-subtask" @click="openCreateSubTask()">Criar Subtarefas</button>
@@ -63,25 +83,22 @@
                         <p>Criado em</p>
                         <div class="created">
                             <img src="../assets/calendar-black.svg" alt="calendar-black">
-                            <span> {{ formatCreatedAt(selectedTask.created_at) }}</span>
+                            <span> {{ formattedCreatedAt }}</span>
                         </div>
                     </div>
                     <div>
                         <p>Data de Vencimento</p>
                         <div class="validate-date">
-                            <img src="../assets/calendar-valid.svg" alt="calendar-valid"
-                                v-if="!isPastDue(selectedTask.due_date)">
-                            <img src="../assets/calendar-expired.svg" alt="calendar-expired"
-                                v-if="isPastDue(selectedTask.due_date)">
-                            <span :style="{ color: !isPastDue(selectedTask.due_date) ? '#009488' : '#D31408' }">{{
-                                formatDueDate(selectedTask.due_date) }}</span>
+                            <img src="../assets/calendar-valid.svg" alt="calendar-valid" v-if="!isPastDue">
+                            <img src="../assets/calendar-expired.svg" alt="calendar-expired" v-if="isPastDue">
+                            <span :style="{ color: !isPastDue ? '#009488' : '#D31408' }">{{ formattedDueDate }}</span>
                         </div>
                     </div>
                     <div>
                         <p>Modificado em</p>
                         <div class="updated">
                             <img src="../assets/calendar-black.svg" alt="calendar-black">
-                            <span>{{ formatCreatedAt(selectedTask.updated_at) }}</span>
+                            <span>{{ formattedUpdatedAt }}</span>
                         </div>
                     </div>
                     <div class="id-task">
@@ -117,51 +134,65 @@ export default {
         },
     },
     computed: {
-        IsTaskChecked: {
-            get() {
-                return this.selectedTask.status === 'completed';
-            },
-            set(value) {
-                this.$emit('update-task-status', { taskId: this.selectedTask.id, newStatus: value ? 'completed' : 'pending' });
-            }
-        }
-    },
-    methods: {
-        closeVisualize() {
-            this.$emit('update:showVisualize', false);
-        },
-        isToday(date) {
+
+        isToday() {
             let today = new Date();
-            let taskDate = new Date(date);
+            let taskDate = new Date(this.selectedTask.due_date);
             return taskDate.getFullYear() === today.getFullYear() &&
                 taskDate.getMonth() === today.getMonth() &&
                 taskDate.getDate() === today.getDate();
         },
-        isPastDue(date) {
+        isPastDue() {
             let today = new Date();
-            let taskDate = new Date(date);
-            return taskDate < today && !this.isToday(date);
+            let taskDate = new Date(this.selectedTask.due_date);
+            return taskDate < today && !this.isToday;
         },
-        updateTaskStatus() {
-            this.isChecked = !this.isChecked;
-        },
-        formatDueDate(dueDate) {
-            let dateObject = new Date(dueDate);
+        formattedDueDate() {
+            let dateObject = new Date(this.selectedTask.due_date);
             let day = dateObject.getDate().toString().padStart(2, '0');
             let month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
             let year = dateObject.getFullYear();
             return `${day}/${month}/${year}`;
         },
-        formatCreatedAt(createdAt) {
-            let created_at = createdAt;
-            let date = new Date(created_at);
-            let day = date.getDate();
-            let month = date.getMonth() + 1;
+        formattedCreatedAt() {
+            let date = new Date(this.selectedTask.created_at);
+            let day = date.getDate().toString().padStart(2, '0');
+            let month = (date.getMonth() + 1).toString().padStart(2, '0');
             let year = date.getFullYear();
-            let hours = date.getHours();
-            let minutes = date.getMinutes();
-            let formatted_date = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year + ' às ' + (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
-            return formatted_date;
+            let hours = date.getHours().toString().padStart(2, '0');
+            let minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${day}/${month}/${year} às ${hours}:${minutes}`;
+        },
+        formattedUpdatedAt() {
+            let date = new Date(this.selectedTask.updated_at);
+            let day = date.getDate().toString().padStart(2, '0');
+            let month = (date.getMonth() + 1).toString().padStart(2, '0');
+            let year = date.getFullYear();
+            let hours = date.getHours().toString().padStart(2, '0');
+            let minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${day}/${month}/${year} às ${hours}:${minutes}`;
+        },
+        IsTaskChecked: {
+            get() {
+                return this.selectedTask && this.selectedTask.status === 'completed';
+            },
+            set(value) {
+                this.$emit('update-task-status', { taskId: this.selectedTask.id, newStatus: value ? 'completed' : 'pending' });
+            }
+        }
+
+    },
+    IsTaskChecked: {
+        get() {
+            return this.selectedTask.status === 'completed';
+        },
+        set(value) {
+            this.$emit('update-task-status', { taskId: this.selectedTask.id, newStatus: value ? 'completed' : 'pending' });
+        }
+    },
+    methods: {
+        closeVisualize() {
+            this.$emit('update:showVisualize', false);
         },
         openMenu() {
             if (this.showMenu === true) {
@@ -174,16 +205,23 @@ export default {
         deleteMenu(selectedTask) {
             axios.delete(`/task/${selectedTask.id}`)
                 .then(() => this.$emit('update:showVisualize', false))
+                .then(() => this.$emit('update-get'));
+        },
+        openCreateSubTask(subtask) {
+            this.$emit('show-Sub-Task', subtask);
+        },
+        deleteSubTask(subtask) {
+            axios.delete(`/subtask/${subtask.id}`)
                 .then(() => {
-                    let deletedTask = this.selectedTask.findIndex(item => item.id ===
-                        selectedTask.id)
-                    this.selectedTask.splice(deletedTask, 1)
+                    this.selectedTask.subtasks = this.selectedTask.subtasks.filter(item => item.id !== subtask.id)
+                        .then(() => this.$emit('update-get'));
+                })
+                .catch(error => {
+                    alert("erro encontrado! Tente novamente mais tarde")
                 });
         },
-        openCreateSubTask() {
-            this.$emit('show-Sub-Task');
-        }
     },
+
 }
 </script>
 
@@ -483,5 +521,92 @@ export default {
     margin-top: 20px;
     margin-bottom: 20px;
     overflow: auto;
+}
+
+.show-subtask {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.show-subtask:hover .hover-icons {
+    opacity: 1;
+}
+
+.hovered-edit:hover #edit-tooltip,
+.hovered-due-date:hover #date-tooltip,
+.hovered-delete:hover #delete-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+
+}
+
+.hovered-delete {
+    width: 19px;
+}
+
+#edit-tooltip {
+    position: absolute;
+    right: 90%;
+    bottom: 120%;
+    background-color: #000000CC;
+    color: #FFFFFF;
+    padding: 5px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.85px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+
+}
+
+#date-tooltip {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.85px;
+    right: 50%;
+    bottom: 130%;
+    background-color: #000000CC;
+    color: #FFFFFF;
+    padding: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+#delete-tooltip {
+    position: absolute;
+    right: 8%;
+    bottom: 130%;
+    background-color: #000000CC;
+    color: #FFFFFF;
+    padding: 5px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.85px;
+    opacity: 1;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.hover-icons {
+    display: flex;
+    gap: 25px;
+    height: 20px;
+    opacity: 0;
+    position: relative;
+    margin-right: 25px;
+    transition: 0.3s opacity ease;
+}
+
+.hover-icons img {
+    display: flex;
+    cursor: pointer;
 }
 </style>

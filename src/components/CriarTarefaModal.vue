@@ -166,8 +166,6 @@ export default {
     width: 325px;
     height: 15px;
     color: #81858E;
-
-
 }
 
 .date {

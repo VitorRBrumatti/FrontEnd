@@ -1,9 +1,16 @@
 <template>
     <div class="back" v-if="showSubTaskModal">
         <div class="sub-tarefa">
-            <div class="superior">
-                <input class="name-sub-task" type="text" v-model="nameSubTask" placeholder="Nome da Subtarefa">
-                <input class="description" type="text" v-model="descriptionSubTask" placeholder="Descrição">
+            <div class="superior">  
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <input class="name-sub-task" type="text" v-model="nameSubTask" placeholder="Nome da Tarefa">
+                    <span v-if="errors.title_subtask" style="color: #ff0000; font-size: 14px;">{{ errors.title_subtask[0] }}</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <input class="description" type="text" v-model="descriptionSubTask" placeholder="Descrição">
+                    <span v-if="errors.description_subtask" style="color: #ff0000; font-size: 14px;">{{ errors.description_subtask[0]
+                        }}</span>
+                </div>
             </div>
             <div class="inferior">
                 <div class="buttons">
@@ -18,6 +25,11 @@
 <script>
 import axios from 'axios';
 export default {
+    data() {
+        return {
+            errors: [],
+        }
+    },
     methods: {
         closeModal() {
             this.$emit('update:showSubTaskModal', false);
@@ -28,12 +40,24 @@ export default {
                 task_id: this.selectedTask.id,
                 description_subtask: this.descriptionSubTask
             }
-            axios.post('/subtask', data)
-                .then(() => this.$emit('update:showSubTaskModal', false))
-                .then(() => this.$emit('update-get'))
-                .catch(e => {
-                        this.errors = e.response.data
-                    });
+            if (this.selectedSubTask.id) {
+                axios.put(`/subtask/${this.selectedSubTask.id}`, data)
+                      .then(() => this.$emit('update:showSubTaskModal', false))
+                      .then(() => this.$emit('Visualization'))
+                      .then(() => this.$emit('update-get'))
+                      .catch(e => {
+                          this.errors = e.response.data
+                     });
+            } else {
+                axios.post('/subtask', data)
+                      .then(() => this.$emit('update:showSubTaskModal', false))
+                      .then(() => this.$emit('Visualization'))
+                      .then(() => this.$emit('update-get'))
+                      .catch(e => {
+                          this.errors = e.response.data
+                     });
+            }
+           
         }
     },
     props: {
@@ -45,12 +69,16 @@ export default {
             type: Object,
             required: false,
         },
+        selectedSubTask: {
+            type: Object,
+            required: false,
+        }
     },
     watch: {
         showSubTaskModal(newValue, oldValue) {
-            if (newValue === true && this.selectedTask.id) {
-                this.nameSubTask = this.selectedTask.subtasks.title_subtask;
-                this.descriptionSubTask = this.selectedTask.subtasks.description_subtask;
+            if (newValue === true && this.selectedSubTask.id) {
+                this.nameSubTask = this.selectedSubTask.title_subtask;
+                this.descriptionSubTask = this.selectedSubTask.description_subtask;
             } else if (newValue === true) {
                 this.nameSubTask = '';
                 this.descriptionSubTask = '';
@@ -122,9 +150,9 @@ export default {
 .description {
     border: none;
     outline: none;
-    width: 447px;
-    height: 17px;
-
+    width: 325px;
+    height: 15px;
+    color: #81858E;
 }
 
 .buttons {

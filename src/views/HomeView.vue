@@ -14,6 +14,7 @@ export default {
             showSubTaskModal: false,
             showVisualize: false,
             selectedTask: {},
+            selectedSubTask: {},
             currentFilter: null,
         }
     },
@@ -30,7 +31,8 @@ export default {
             this.selectedTask = task,
             this.showVisualize = true;
         },
-        OpenSubTaskModal() {
+        OpenSubTaskModal(subtask) {
+            this.selectedSubTask = subtask,
             this.showSubTaskModal = true;
         },
         updateGet() {
@@ -39,6 +41,9 @@ export default {
         applyFilter(filter) {
             this.currentFilter = filter;
         },
+        closeVisu() {
+            this.showVisualize = false;
+        }
     },
     components: {
         Navbar,
@@ -63,8 +68,8 @@ export default {
             <Navbar @modalEmit="openModal()" />
             <CriarTarefaModal @update-get="updateGet" v-model:showModal="showModal" :selectedTask="selectedTask" @get="updateGet"/>
         </div>
-        <VisualizeTask v-model:showVisualize="showVisualize" :selectedTask="selectedTask" @show-Sub-Task="OpenSubTaskModal" ></VisualizeTask>
-        <CreateSubTask @update-get="updateGet" v-model:showSubTaskModal="showSubTaskModal" :selectedTask="selectedTask" @get="updateGet"></CreateSubTask>
+        <VisualizeTask @update-get="updateGet" v-model:showVisualize="showVisualize" :selectedTask="selectedTask" @show-Sub-Task="OpenSubTaskModal" ></VisualizeTask>
+        <CreateSubTask :selectedSubTask="selectedSubTask" @Visualization="closeVisu" @update-get="updateGet" v-model:showSubTaskModal="showSubTaskModal" :selectedTask="selectedTask" @get="updateGet"></CreateSubTask>
      </div>
 </template>
 

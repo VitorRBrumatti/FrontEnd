@@ -95,10 +95,8 @@ export default {
     name: 'EntradaPage',
     methods: {
         getTasks(filter = null) {
-            console.log('getTask is working');
             axios.get('/task', { params: { filter } })
                 .then((response) => {
-                    console.log(response);
                     this.Tasks = response.data.data;
                     this.taskIsChecked = this.Tasks.map(task => ({ id: task.id, status: task.status }));
                     this.Tasks.forEach(task => {
@@ -107,7 +105,6 @@ export default {
                         });
                     });
                     this.filteredTasks = this.Tasks;
-                    console.log(this.Tasks);
                 })
                 .catch(error => {
                     alert('Failed to fetch tasks:', error);
@@ -121,7 +118,6 @@ export default {
 
             axios.put(`/task/${task.id}`, { status: newStatus })
                 .then(response => {
-                    console.log(`Task updated successfully: ${response.data}`);
 
                     let taskToUpdate = this.taskIsChecked.find(item => item.id === task.id);
 
