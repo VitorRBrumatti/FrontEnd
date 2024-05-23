@@ -34,7 +34,7 @@ export default {
             this.showSubTaskModal = true;
         },
         updateGet() {
-            this.$refs.EntradaPage.getTasks();
+            this.$refs.EntradaPageRef.getTasks(null);
         },
         applyFilter(filter) {
             this.currentFilter = filter;
@@ -58,7 +58,7 @@ export default {
 <template>
     <div class="back">
         <lateralBar @filter-tasks="applyFilter"></lateralBar>
-        <EntradaPage :filter="currentFilter" @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
+        <EntradaPage ref="EntradaPageRef" :filter="currentFilter" @open-edit-modal="OpenEditModal"  @open-visualize-task="OpenVisualizeTask" :update-task-status="updateTaskStatus"></EntradaPage>
         <div>
             <Navbar @modalEmit="openModal()" />
             <CriarTarefaModal @update-get="updateGet" v-model:showModal="showModal" :selectedTask="selectedTask" @get="updateGet"/>

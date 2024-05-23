@@ -11,7 +11,7 @@
                 <div class="only-task">
                     <div>
                         <input type="checkbox" :name="'checkbox' + task.id" :id="'custom-checkbox' + task.id"
-                            :checked="IsTaskChecked(task)" v-on:change="updateTaskStatus(task)" @click.stop="''" />
+                            :checked="task.status === 'completed'" v-on:change="updateTaskStatus(task)" @click.stop="''" />
                         <label :for="'custom-checkbox' + task.id" @click.stop="''"></label>
                         <span class="title-task" for="'custom-checkbox' + task.id" @click="visualizeTask(task)">{{ task.title }}</span>
                         <p class="description-task" >{{ task.description }}</p>
@@ -40,7 +40,7 @@
                             </div>
                             <div class="hovered-delete">
                                 <img src="../assets/delete-icon.svg" alt="delete-icon"
-                                    @click="selectedTasks = task.id, deleteTask(task.id)" @click.stop="''">
+                                    @click="selectedTasks = task.id, deleteTask(task)" @click.stop="''">
                                 <span id="delete-tooltip">Excluir tarefa</span>
                             </div>
                         </div>
@@ -52,12 +52,12 @@
                         <div class="subtask-organize">
                             <div class="show-subtask" v-for="Subtask in task.subtasks" :key="Subtask.id"
                                 @click.stop="''">
-                                <input type="checkbox" :name="'checkbox' + Subtask.id"
-                                    :id="'custom-checkbox' + Subtask.id"
+                                <input type="checkbox" :name="'checkbox' + task.id + '_' + Subtask.id"
+                                    :id="'custom-checkbox' + task.id + '_' + Subtask.id"
                                     :checked="Subtask.status_subtask === 'completed'"
                                     v-on:change="updateSubtaskStatus(Subtask)" 
-                                    :disabled="IsTaskChecked(task)" />
-                                <label :for="'custom-checkbox' + Subtask.id"></label>
+                                    :disabled="task.status === 'completed'" />
+                                <label :for="'custom-checkbox' + task.id + '_' + Subtask.id"></label>
                                 <span class="subtask-title">{{ Subtask.title_subtask }}</span>
                             </div>
                         </div>
@@ -92,6 +92,7 @@ export default {
             }
         }
     },
+    name: 'EntradaPage',
     methods: {
         getTasks(filter = null) {
             console.log('getTask is working');
@@ -113,7 +114,7 @@ export default {
                 });
         },
         IsTaskChecked(task) {
-            return task.subtasks && task.subtasks.some(subtask => subtask.status_subtask === 'completed');
+            return task.subtasks && task.subtasks.every(subtask => subtask.status_subtask === 'completed');
         },
         updateTaskStatus(task) {
             let newStatus = task.status === 'completed' ? 'pending' : 'completed';
@@ -134,7 +135,7 @@ export default {
                     this.getTasks();
                 })
                 .catch(error => {
-                    console.error(`Error updating task: ${error}`);
+                    alert(`Error updating task: ${error.response.data}`);
                 });
         },
         updateSubtaskStatus(Subtask) {
@@ -152,19 +153,18 @@ export default {
                     }
                     
                     Subtask.status_subtask = SubStatus;
-                    alert('Subtask updated successfully!');
                     this.getTasks();
                 })
                 .catch(error => {
-                    console.error(error);
+                    alert(error.response.data);
                 });
         },
         openEditModal(task) {
             this.$emit('open-edit-modal', task);
         },
         formatDueDate(dueDate) {
-            const dateObject = new Date(dueDate);
-            const formattedDate = dateObject.toISOString().split('T')[0];
+            let dateObject = new Date(dueDate);
+            let formattedDate = dateObject.toISOString().split('T')[0];
             return formattedDate;
         },
         isToday(date) {
@@ -180,14 +180,14 @@ export default {
             return taskDate < today && !this.isToday(date);
         },
         deleteTask(task) {
-            axios.delete(`/task/${task}`)
+            axios.delete(`/task/${task.id}`)
                 .then(() => {
                     let deletedTask = this.Tasks.findIndex(item => item.id === task);
                     this.Tasks.splice(deletedTask, 1);
                     this.$emit('update:showVisualize', false);
                 })
                 .catch(error => {
-                    console.error(`Error deleting task: ${error}`);
+                    alert("erro encontrado! Tente novamente mais tarde")
                 });
         },
         visualizeTask(task) {

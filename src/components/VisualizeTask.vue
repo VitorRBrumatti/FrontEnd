@@ -49,10 +49,10 @@
                             <div class="show-subtask" v-for="Subtask in selectedTask.subtasks"
                                 :key="selectedTask.subtasks.id">
                                 <input type="checkbox" :name="'checkbox' + Subtask.id"
-                                    :id="'custom-checkbox' + Subtask.id" v-model="IsTaskChecked"
+                                    :id="'custom-checkbox' + selectedTask.id + '_' + Subtask.id" v-model="IsTaskChecked"
                                     @change="updateTaskStatus" />
-                                <label :for="'custom-checkbox' + Subtask.id"></label>
-                                <span>{{ Subtask.title_subtask }}</span>
+                                <label :for="'custom-checkbox' + selectedTask.id + '_' + Subtask.id"></label>
+                                <span class="subtask-title">{{ Subtask.title_subtask }}</span>
                             </div>
                         </div>
                         <button class="create-subtask" @click="openCreateSubTask()">Criar Subtarefas</button>
@@ -173,13 +173,12 @@ export default {
         },
         deleteMenu(selectedTask) {
             axios.delete(`/task/${selectedTask.id}`)
+                .then(() => this.$emit('update:showVisualize', false))
                 .then(() => {
-                    console.log('foi');
-                    this.$emit('update:showVisualize', false);
                     let deletedTask = this.selectedTask.findIndex(item => item.id ===
-                        selectedTask)
-                    this.selectedTask.splice(deletedTask, 1);
-                })
+                        selectedTask.id)
+                    this.selectedTask.splice(deletedTask, 1)
+                });
         },
         openCreateSubTask() {
             this.$emit('show-Sub-Task');
@@ -273,7 +272,10 @@ export default {
     font-size: 18px;
     font-weight: 600;
     line-height: 21.94px;
-
+    width: 50px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: clip;
 }
 
 .description {
@@ -282,6 +284,10 @@ export default {
     font-size: 14px;
     font-weight: 400;
     line-height: 21px;
+    width: 90%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: clip;
 }
 
 .date {
@@ -313,9 +319,11 @@ export default {
     text-align: left;
 
 }
+
 .title-section span {
     font-size: 14px;
     font-weight: 600;
+
 }
 
 .expired {
@@ -471,7 +479,9 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    height: 260px;
     margin-top: 20px;
     margin-bottom: 20px;
+    overflow: auto;
 }
 </style>

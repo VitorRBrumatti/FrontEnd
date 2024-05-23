@@ -64,20 +64,19 @@ export default {
             }
             if (this.selectedTask.id) {
                 axios.put(`/task/${this.selectedTask.id}`, data)
-                    .then(() => this.$emit('update:showModal', false),
-                    this.$emit('update-get'))
+                    .then(() => this.$emit('update:showModal', false))
+                    .then(() => this.$emit('update-get'))
                     .catch(e => {
                         this.errors = e.response.data
                     });
             }
             else {
                 axios.post('/task', data)
-                    .then(() => this.$emit('update:showModal', false),
-                        this.$emit('update-get'))
+                    .then(() => this.$emit('update:showModal', false))
+                    .then(() => this.$emit('update-get'))
                     .catch(e => {
                         this.errors = e.response.data
                     });
-
             }
 
         }
@@ -166,6 +165,8 @@ export default {
     outline: none;
     width: 325px;
     height: 15px;
+    color: #81858E;
+
 
 }
 
@@ -181,7 +182,7 @@ export default {
 
 input.date {
     font-family: Montserrat;
-    color: #E5E5E5;
+    color: #81858E;
     background-repeat: no-repeat;
     background-size: 20px 20px;
     background-position: left center;
@@ -194,8 +195,8 @@ input.date::-webkit-calendar-picker-indicator {
     position: relative;
     right: 115%;
     width: 20px;
-    background-size: 20px 20px;
-    color: #E5E5E5;
+    background-size: 20px 18px;
+    color: #81858E;
     background-position: center;
     background-image: url('../assets/calendar.svg');
 }

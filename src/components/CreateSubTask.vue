@@ -28,9 +28,12 @@ export default {
                 task_id: this.selectedTask.id,
                 description_subtask: this.descriptionSubTask
             }
-            axios.post('/Subtask', data)
-                .then(() => this.$emit('update:showSubTaskModal', false));
-                this.$emit('update-get');
+            axios.post('/subtask', data)
+                .then(() => this.$emit('update:showSubTaskModal', false))
+                .then(() => this.$emit('update-get'))
+                .catch(e => {
+                        this.errors = e.response.data
+                    });
         }
     },
     props: {
